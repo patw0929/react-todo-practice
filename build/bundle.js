@@ -237,6 +237,7 @@
 	 */
 	var ReactPropTypes = React.PropTypes;
 	var actions = __webpack_require__(4);
+	var styles = __webpack_require__(9);
 
 	var Footer = React.createClass({displayName: 'Footer',
 
@@ -251,7 +252,7 @@
 	  	return (
 	      React.createElement("footer", {className: "footer"}, 
 	        React.createElement("span", {className: "licensing"}, 
-	            "MIT licensing, use at will." 
+	            "MIT licensing, use at will."
 	        )
 	      )
 	    );
@@ -272,7 +273,7 @@
 	 */
 	var AppDispatcher = __webpack_require__(5);
 	var AppConstants = __webpack_require__(6);
-	var Promise = __webpack_require__(10).Promise;
+	var Promise = __webpack_require__(12).Promise;
 
 	// 就是個單純的 hash table
 	// 因此下面所有指令皆可視為 Action static method
@@ -341,7 +342,7 @@
 	
 	var AppConstants = __webpack_require__(6);
 
-	var Dispatcher = __webpack_require__(12).Dispatcher;
+	var Dispatcher = __webpack_require__(14).Dispatcher;
 
 
 	/**
@@ -402,7 +403,7 @@
 	 * TodoConstants
 	 */
 
-	var keyMirror = __webpack_require__(13);
+	var keyMirror = __webpack_require__(15);
 
 	// Constructs an enumeration with keys equal to their value.
 	// 也就是讓 hash 的 key 與 value 值一樣
@@ -428,7 +429,7 @@
 	var content = __webpack_require__(8);
 	if(typeof content === 'string') content = [[module.id, content, '']];
 	// add the styles to the DOM
-	var update = __webpack_require__(9)(content);
+	var update = __webpack_require__(11)(content);
 	// Hot Module Replacement
 	if(false) {
 		// When the styles change, update the <style> tags
@@ -445,11 +446,41 @@
 /* 8 */
 /***/ function(module, exports, __webpack_require__) {
 
-	exports = module.exports = __webpack_require__(11)();
-	exports.push([module.id, "header h1{text-align:center;background-color:#12c46e;line-height:60px}", ""]);
+	exports = module.exports = __webpack_require__(13)();
+	exports.push([module.id, "header.header h1{text-align:center;background-color:#12c46e;line-height:60px}", ""]);
 
 /***/ },
 /* 9 */
+/***/ function(module, exports, __webpack_require__) {
+
+	// style-loader: Adds some css to the DOM by adding a <style> tag
+
+	// load the styles
+	var content = __webpack_require__(10);
+	if(typeof content === 'string') content = [[module.id, content, '']];
+	// add the styles to the DOM
+	var update = __webpack_require__(11)(content);
+	// Hot Module Replacement
+	if(false) {
+		// When the styles change, update the <style> tags
+		module.hot.accept("!!/Users/gogolook/Projects/react-todo-practice/node_modules/css-loader/index.js!/Users/gogolook/Projects/react-todo-practice/node_modules/sass-loader/index.js!/Users/gogolook/Projects/react-todo-practice/app/assets/sass/views/Footer.scss", function() {
+			var newContent = require("!!/Users/gogolook/Projects/react-todo-practice/node_modules/css-loader/index.js!/Users/gogolook/Projects/react-todo-practice/node_modules/sass-loader/index.js!/Users/gogolook/Projects/react-todo-practice/app/assets/sass/views/Footer.scss");
+			if(typeof newContent === 'string') newContent = [module.id, newContent, ''];
+			update(newContent);
+		});
+		// When the module is disposed, remove the <style> tags
+		module.hot.dispose(function() { update(); });
+	}
+
+/***/ },
+/* 10 */
+/***/ function(module, exports, __webpack_require__) {
+
+	exports = module.exports = __webpack_require__(13)();
+	exports.push([module.id, "footer.footer{position:fixed;bottom:0;background-color:#6b4308;color:#fff;text-align:center;line-height:60px;width:100%}", ""]);
+
+/***/ },
+/* 11 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/*
@@ -571,7 +602,7 @@
 
 
 /***/ },
-/* 10 */
+/* 12 */
 /***/ function(module, exports, __webpack_require__) {
 
 	var __WEBPACK_AMD_DEFINE_RESULT__;/* WEBPACK VAR INJECTION */(function(process, global, module) {/*!
@@ -1532,7 +1563,7 @@
 	    };
 
 	    /* global define:true module:true window: true */
-	    if ("function" === 'function' && __webpack_require__(15)['amd']) {
+	    if ("function" === 'function' && __webpack_require__(18)['amd']) {
 	      !(__WEBPACK_AMD_DEFINE_RESULT__ = function() { return es6$promise$umd$$ES6Promise; }.call(exports, __webpack_require__, exports, module), __WEBPACK_AMD_DEFINE_RESULT__ !== undefined && (module.exports = __WEBPACK_AMD_DEFINE_RESULT__));
 	    } else if (typeof module !== 'undefined' && module['exports']) {
 	      module['exports'] = es6$promise$umd$$ES6Promise;
@@ -1540,10 +1571,10 @@
 	      this['ES6Promise'] = es6$promise$umd$$ES6Promise;
 	    }
 	}).call(this);
-	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(14), (function() { return this; }()), __webpack_require__(16)(module)))
+	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(16), (function() { return this; }()), __webpack_require__(19)(module)))
 
 /***/ },
-/* 11 */
+/* 13 */
 /***/ function(module, exports, __webpack_require__) {
 
 	module.exports = function() {
@@ -1564,7 +1595,7 @@
 	}
 
 /***/ },
-/* 12 */
+/* 14 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/**
@@ -1580,7 +1611,7 @@
 
 
 /***/ },
-/* 13 */
+/* 15 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/* WEBPACK VAR INJECTION */(function(process) {/**
@@ -1597,7 +1628,7 @@
 
 	"use strict";
 
-	var invariant = __webpack_require__(18);
+	var invariant = __webpack_require__(20);
 
 	/**
 	 * Constructs an enumeration with keys equal to their value.
@@ -1635,10 +1666,10 @@
 
 	module.exports = keyMirror;
 	
-	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(14)))
+	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(16)))
 
 /***/ },
-/* 14 */
+/* 16 */
 /***/ function(module, exports, __webpack_require__) {
 
 	// shim for using process in browser
@@ -1707,29 +1738,6 @@
 
 
 /***/ },
-/* 15 */
-/***/ function(module, exports, __webpack_require__) {
-
-	module.exports = function() { throw new Error("define cannot be used indirect"); };
-
-
-/***/ },
-/* 16 */
-/***/ function(module, exports, __webpack_require__) {
-
-	module.exports = function(module) {
-		if(!module.webpackPolyfill) {
-			module.deprecate = function() {};
-			module.paths = [];
-			// module.parent = undefined by default
-			module.children = [];
-			module.webpackPolyfill = 1;
-		}
-		return module;
-	}
-
-
-/***/ },
 /* 17 */
 /***/ function(module, exports, __webpack_require__) {
 
@@ -1747,7 +1755,7 @@
 
 	"use strict";
 
-	var invariant = __webpack_require__(19);
+	var invariant = __webpack_require__(21);
 
 	var _lastID = 1;
 	var _prefix = 'ID_';
@@ -1989,6 +1997,29 @@
 /* 18 */
 /***/ function(module, exports, __webpack_require__) {
 
+	module.exports = function() { throw new Error("define cannot be used indirect"); };
+
+
+/***/ },
+/* 19 */
+/***/ function(module, exports, __webpack_require__) {
+
+	module.exports = function(module) {
+		if(!module.webpackPolyfill) {
+			module.deprecate = function() {};
+			module.paths = [];
+			// module.parent = undefined by default
+			module.children = [];
+			module.webpackPolyfill = 1;
+		}
+		return module;
+	}
+
+
+/***/ },
+/* 20 */
+/***/ function(module, exports, __webpack_require__) {
+
 	/* WEBPACK VAR INJECTION */(function(process) {/**
 	 * Copyright 2013-2014, Facebook, Inc.
 	 * All rights reserved.
@@ -2043,10 +2074,10 @@
 
 	module.exports = invariant;
 	
-	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(14)))
+	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(16)))
 
 /***/ },
-/* 19 */
+/* 21 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/**

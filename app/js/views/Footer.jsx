@@ -3,6 +3,7 @@
  */
 var ReactPropTypes = React.PropTypes;
 var actions = require('../actions/AppActionCreator');
+var styles = require('../../assets/sass/views/Footer.scss');
 
 var Footer = React.createClass({
 
@@ -17,7 +18,7 @@ var Footer = React.createClass({
   	return (
       <footer className="footer">
         <span className="licensing">
-            MIT licensing, use at will. 
+            MIT licensing, use at will.
         </span>
       </footer>
     );
