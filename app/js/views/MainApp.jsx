@@ -11,6 +11,8 @@ var Header = React.createFactory( require('./Header.jsx') );
 var List = React.createFactory( require('./List.jsx') );
 var Footer = React.createFactory( require('./Footer.jsx') );
 
+var TodoStore = require('../stores/TodoStore');
+var AppConstants = require('../constants/AppConstants');
 
 
 //========================================================================
