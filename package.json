@@ -1,0 +1,12 @@
+{
+  "name": "react-todo-practice",
+  "version": "0.0.0",
+  "description": "",
+  "main": "boot.js",
+  "scripts": {
+    "start": "gulp",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "patw (patw.hi@gmail.com)",
+  "license": "MIT"
+}
