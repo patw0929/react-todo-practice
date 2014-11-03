@@ -14,5 +14,11 @@ module.exports = keyMirror({
 	SOURCE_SERVER_ACTION: null,
 	SOURCE_ROUTER_ACTION: null,
 
+  CHANGE_EVENT: null,
+
+  TODO_CREATE: null,
+  TODO_REMOVE: null,
+  TODO_UPDATE: null,
+  TODO_SELECT: null
 });
 

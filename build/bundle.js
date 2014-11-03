@@ -326,8 +326,8 @@
 	var AppConstants = __webpack_require__(6);
 	var actions = __webpack_require__(8);
 
-	var objectAssign = __webpack_require__(10);
-	var EventEmitter = __webpack_require__(11).EventEmitter; // 取得一個 pub/sub 廣播器
+	var objectAssign = __webpack_require__(11);
+	var EventEmitter = __webpack_require__(10).EventEmitter; // 取得一個 pub/sub 廣播器
 
 	var arrTodos = [
 	  { name: '吃飯', created: Date.now(), uid: 1 },
@@ -374,42 +374,41 @@
 	     *
 	     */
 	    case AppConstants.TODO_CREATE:
-	      arrTodos.push( action.item );
-	      console.log( 'TodoStore 新增: ', arrTodos );
-	      TodoStore.emit( AppConstants.CHANGE_EVENT );
+	      arrTodos.push(action.item);
+	      console.log('TodoStore 新增: ', arrTodos);
+	      TodoStore.emit(AppConstants.CHANGE_EVENT);
 	      break;
 
 	    /**
 	     *
 	     */
 	    case AppConstants.TODO_REMOVE:
-	      arrTodos = arrTodos.filter( function(item){
+	      arrTodos = arrTodos.filter(function (item) {
 	        return item != action.item;
 	      });
-	      console.log( 'TodoStore 刪完: ', arrTodos );
-	      TodoStore.emit( AppConstants.CHANGE_EVENT );
+	      console.log('TodoStore 刪完: ', arrTodos);
+	      TodoStore.emit(AppConstants.CHANGE_EVENT);
 	      break;
 
 	    /**
 	     *
 	     */
 	    case AppConstants.TODO_UPDATE:
-	      console.log( 'TodoStore 更新: ', arrTodos );
-	      TodoStore.emit( AppConstants.CHANGE_EVENT );
+	      console.log('TodoStore 更新: ', arrTodos);
+	      TodoStore.emit(AppConstants.CHANGE_EVENT);
 	      break;
 
 	    /**
 	     *
 	     */
 	    case AppConstants.TODO_SELECT:
-	      console.log( 'TodoStore 選取: ', action.item );
+	      console.log('TodoStore 選取: ', action.item);
 
 	      // 選取同樣的 item 就不用處理下去了
-	      if( selectedItem != action.item ){
-	          selectedItem = action.item;
-	          TodoStore.emit( AppConstants.CHANGE_EVENT );
+	      if (selectedItem != action.item) {
+	        selectedItem = action.item;
+	        TodoStore.emit(AppConstants.CHANGE_EVENT);
 	      }
-
 	      break;
 
 	    default:
@@ -441,6 +440,12 @@
 		SOURCE_SERVER_ACTION: null,
 		SOURCE_ROUTER_ACTION: null,
 
+	  CHANGE_EVENT: null,
+
+	  TODO_CREATE: null,
+	  TODO_REMOVE: null,
+	  TODO_UPDATE: null,
+	  TODO_SELECT: null
 	});
 
 
@@ -475,7 +480,7 @@
 /***/ function(module, exports, __webpack_require__) {
 
 	/**
-	 * 
+	 *
 	 */
 	var AppDispatcher = __webpack_require__(9);
 	var AppConstants = __webpack_require__(6);
@@ -487,53 +492,11 @@
 
 	    /**
 	     * ok
-	     * 
+	     *
 	     * app 啟動後，第一次載入資料
 	     */
 	    load: function(){
-			//        
-	    },
-
-	    createTodo: function( item ) {
-
-	        // 1. 廣播給 store 知道去 optimistic 更新 view
-	        AppDispatcher.handleViewAction({
-
-	            // type 是為了方便將來所有 Store 內部判斷是否要處理這個 action
-	            //actionType: AppConstants.TODO_CREATE,
-
-	            // 這裏是真正要傳出去的值
-	            item: item
-	        });
-
-	        // 2. 接著操作 REST service 回存 db
-	        // 太早拿 doc store 會取到空值，因此改在這裏拿
-	        /*var DocumentStore = require('zoot/stores/DocumentStore');
-	        
-	        // 依 flux 新手法，調用 store method 幫忙生成新物件好返還 server
-	        var aFolder = DocumentStore.updateFolder( {folder: folder, newVal: newVal} );
-
-	        // 操作 DAO 保存資料，注意要先將 file 轉成 JSON 字串
-	        this.invokeService( 'updateFolder', deCircular(aFolder) )
-	        
-	        // 等所有 dao 的 async 操作完成，處理 result
-	        // 由於可能有多個 DAO 操作完畢，因此 result 會是 array
-	        .then( function( payload ){
-	            
-	            if( payload.length == 0 )
-	                return console.error( 'service 操作失敗' );
-
-	            // 現在 server 已建立正式 doc.uid，廣播給 Store 知道
-	            // 讓它內部依 doc.tid 將 server_uid 更新到 local_uid 內
-	            var result = payload[0];
-	            // dbg( 'updateFolder 成功 >tid: ', result.name );
-
-	        })
-
-	        .catch( function(err){
-	            dbg( '\tupdateFolder 失敗: ', err.stack );
-	        })*/
-	        
+			//
 	    },
 
 	};
@@ -603,49 +566,6 @@
 
 /***/ },
 /* 10 */
-/***/ function(module, exports, __webpack_require__) {
-
-	'use strict';
-
-	function ToObject(val) {
-		if (val == null) {
-			throw new TypeError('Object.assign cannot be called with null or undefined');
-		}
-
-		return Object(val);
-	}
-
-	module.exports = Object.assign || function (target, source) {
-		var pendingException;
-		var from;
-		var keys;
-		var to = ToObject(target);
-
-		for (var s = 1; s < arguments.length; s++) {
-			from = arguments[s];
-			keys = Object.keys(Object(from));
-
-			for (var i = 0; i < keys.length; i++) {
-				try {
-					to[keys[i]] = from[keys[i]];
-				} catch (err) {
-					if (pendingException === undefined) {
-						pendingException = err;
-					}
-				}
-			}
-		}
-
-		if (pendingException) {
-			throw pendingException;
-		}
-
-		return to;
-	};
-
-
-/***/ },
-/* 11 */
 /***/ function(module, exports, __webpack_require__) {
 
 	// Copyright Joyent, Inc. and other Node contributors.
@@ -949,6 +869,49 @@
 	function isUndefined(arg) {
 	  return arg === void 0;
 	}
+
+
+/***/ },
+/* 11 */
+/***/ function(module, exports, __webpack_require__) {
+
+	'use strict';
+
+	function ToObject(val) {
+		if (val == null) {
+			throw new TypeError('Object.assign cannot be called with null or undefined');
+		}
+
+		return Object(val);
+	}
+
+	module.exports = Object.assign || function (target, source) {
+		var pendingException;
+		var from;
+		var keys;
+		var to = ToObject(target);
+
+		for (var s = 1; s < arguments.length; s++) {
+			from = arguments[s];
+			keys = Object.keys(Object(from));
+
+			for (var i = 0; i < keys.length; i++) {
+				try {
+					to[keys[i]] = from[keys[i]];
+				} catch (err) {
+					if (pendingException === undefined) {
+						pendingException = err;
+					}
+				}
+			}
+		}
+
+		if (pendingException) {
+			throw pendingException;
+		}
+
+		return to;
+	};
 
 
 /***/ },
@@ -2169,7 +2132,7 @@
 	    };
 
 	    /* global define:true module:true window: true */
-	    if ("function" === 'function' && __webpack_require__(24)['amd']) {
+	    if ("function" === 'function' && __webpack_require__(25)['amd']) {
 	      !(__WEBPACK_AMD_DEFINE_RESULT__ = function() { return es6$promise$umd$$ES6Promise; }.call(exports, __webpack_require__, exports, module), __WEBPACK_AMD_DEFINE_RESULT__ !== undefined && (module.exports = __WEBPACK_AMD_DEFINE_RESULT__));
 	    } else if (typeof module !== 'undefined' && module['exports']) {
 	      module['exports'] = es6$promise$umd$$ES6Promise;
@@ -2177,7 +2140,7 @@
 	      this['ES6Promise'] = es6$promise$umd$$ES6Promise;
 	    }
 	}).call(this);
-	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(23), (function() { return this; }()), __webpack_require__(25)(module)))
+	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(23), (function() { return this; }()), __webpack_require__(26)(module)))
 
 /***/ },
 /* 20 */
@@ -2278,7 +2241,7 @@
 
 	"use strict";
 
-	var invariant = __webpack_require__(26);
+	var invariant = __webpack_require__(24);
 
 	var _lastID = 1;
 	var _prefix = 'ID_';
@@ -2589,29 +2552,6 @@
 /* 24 */
 /***/ function(module, exports, __webpack_require__) {
 
-	module.exports = function() { throw new Error("define cannot be used indirect"); };
-
-
-/***/ },
-/* 25 */
-/***/ function(module, exports, __webpack_require__) {
-
-	module.exports = function(module) {
-		if(!module.webpackPolyfill) {
-			module.deprecate = function() {};
-			module.paths = [];
-			// module.parent = undefined by default
-			module.children = [];
-			module.webpackPolyfill = 1;
-		}
-		return module;
-	}
-
-
-/***/ },
-/* 26 */
-/***/ function(module, exports, __webpack_require__) {
-
 	/**
 	 * Copyright (c) 2014, Facebook, Inc.
 	 * All rights reserved.
@@ -2665,6 +2605,29 @@
 	};
 
 	module.exports = invariant;
+
+
+/***/ },
+/* 25 */
+/***/ function(module, exports, __webpack_require__) {
+
+	module.exports = function() { throw new Error("define cannot be used indirect"); };
+
+
+/***/ },
+/* 26 */
+/***/ function(module, exports, __webpack_require__) {
+
+	module.exports = function(module) {
+		if(!module.webpackPolyfill) {
+			module.deprecate = function() {};
+			module.paths = [];
+			// module.parent = undefined by default
+			module.children = [];
+			module.webpackPolyfill = 1;
+		}
+		return module;
+	}
 
 
 /***/ }

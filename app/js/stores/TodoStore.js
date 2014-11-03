@@ -58,42 +58,41 @@ TodoStore.dispatchToken = AppDispatcher.register( function eventHandlers(evt){
      *
      */
     case AppConstants.TODO_CREATE:
-      arrTodos.push( action.item );
-      console.log( 'TodoStore 新增: ', arrTodos );
-      TodoStore.emit( AppConstants.CHANGE_EVENT );
+      arrTodos.push(action.item);
+      console.log('TodoStore 新增: ', arrTodos);
+      TodoStore.emit(AppConstants.CHANGE_EVENT);
       break;
 
     /**
      *
      */
     case AppConstants.TODO_REMOVE:
-      arrTodos = arrTodos.filter( function(item){
+      arrTodos = arrTodos.filter(function (item) {
         return item != action.item;
       });
-      console.log( 'TodoStore 刪完: ', arrTodos );
-      TodoStore.emit( AppConstants.CHANGE_EVENT );
+      console.log('TodoStore 刪完: ', arrTodos);
+      TodoStore.emit(AppConstants.CHANGE_EVENT);
       break;
 
     /**
      *
      */
     case AppConstants.TODO_UPDATE:
-      console.log( 'TodoStore 更新: ', arrTodos );
-      TodoStore.emit( AppConstants.CHANGE_EVENT );
+      console.log('TodoStore 更新: ', arrTodos);
+      TodoStore.emit(AppConstants.CHANGE_EVENT);
       break;
 
     /**
      *
      */
     case AppConstants.TODO_SELECT:
-      console.log( 'TodoStore 選取: ', action.item );
+      console.log('TodoStore 選取: ', action.item);
 
       // 選取同樣的 item 就不用處理下去了
-      if( selectedItem != action.item ){
-          selectedItem = action.item;
-          TodoStore.emit( AppConstants.CHANGE_EVENT );
+      if (selectedItem != action.item) {
+        selectedItem = action.item;
+        TodoStore.emit(AppConstants.CHANGE_EVENT);
       }
-
       break;
 
     default:
