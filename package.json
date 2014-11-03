@@ -12,6 +12,7 @@
   "devDependencies": {
     "gulp": "^3.8.9",
     "gulp-notify": "^2.0.0",
+    "gulp-webpack": "^1.0.0",
     "webpack": "^1.4.11"
   }
 }
