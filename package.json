@@ -10,7 +10,7 @@
   "author": "patw (patw.hi@gmail.com)",
   "license": "MIT",
   "devDependencies": {
-    "connect": "^3.3.2",
+    "connect": "^2.17.1",
     "css-loader": "^0.9.0",
     "gulp": "^3.8.9",
     "gulp-livereload": "^2.1.1",
