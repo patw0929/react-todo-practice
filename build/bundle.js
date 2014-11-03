@@ -118,13 +118,7 @@
 
 	    // 這是 component API, 在 mount 前會跑一次，取值做為 this.state 的預設值
 	    getInitialState: function () {
-	        return {
-	          arrTodos: [
-	            { name: '吃飯', created: Date.now(), uid: 1 },
-	            { name: '睡覺', created: Date.now(), uid: 2 },
-	            { name: '打東東', created: Date.now(), uid: 3 }
-	          ]
-	        };
+	      return this._getState();
 	    },
 
 	    /**
@@ -200,6 +194,11 @@
 	    //
 	    // private methods - 處理元件內部的事件
 
+	    _getState: function () {
+	      return {
+	        arrTodos: TodoStore.getTodos()
+	      }
+	    }
 
 	});
 
@@ -327,10 +326,97 @@
 	var AppConstants = __webpack_require__(6);
 	var actions = __webpack_require__(8);
 
-	var objectAssign = __webpack_require__(11);
-	var EventEmitter = __webpack_require__(10).EventEmitter; // 取得一個 pub/sub 廣播器
+	var objectAssign = __webpack_require__(10);
+	var EventEmitter = __webpack_require__(11).EventEmitter; // 取得一個 pub/sub 廣播器
 
-	var TodoStore;
+	var arrTodos = [
+	  { name: '吃飯', created: Date.now(), uid: 1 },
+	  { name: '睡覺', created: Date.now(), uid: 2 },
+	  { name: '打東東', created: Date.now(), uid: 3 }
+	];
+
+	var TodoStore = {};
+
+	var selectedItem = null;
+
+	/**
+	 * 建立 TodoStore class，並且繼承 EventEMitter 以擁有廣播功能
+	 */
+	objectAssign( TodoStore, EventEmitter.prototype, {
+	  /**
+	   * Public API
+	   * 供外界取得 TodoStore 內部資料
+	   */
+	  getTodos: function(){
+	    return arrTodos;
+	  },
+
+	  /**
+	   *
+	   */
+	  getSelectedItem: function(){
+	    return selectedItem;
+	  }
+	});
+
+	//========================================================================
+	//
+	// event handlers
+
+	TodoStore.dispatchToken = AppDispatcher.register( function eventHandlers(evt){
+
+	  // evt .action 就是 view 當時廣播出來的整包物件
+	  // 它內含 actionType
+	  var action = evt.action;
+
+	  switch (action.actionType) {
+	    /**
+	     *
+	     */
+	    case AppConstants.TODO_CREATE:
+	      arrTodos.push( action.item );
+	      console.log( 'TodoStore 新增: ', arrTodos );
+	      TodoStore.emit( AppConstants.CHANGE_EVENT );
+	      break;
+
+	    /**
+	     *
+	     */
+	    case AppConstants.TODO_REMOVE:
+	      arrTodos = arrTodos.filter( function(item){
+	        return item != action.item;
+	      });
+	      console.log( 'TodoStore 刪完: ', arrTodos );
+	      TodoStore.emit( AppConstants.CHANGE_EVENT );
+	      break;
+
+	    /**
+	     *
+	     */
+	    case AppConstants.TODO_UPDATE:
+	      console.log( 'TodoStore 更新: ', arrTodos );
+	      TodoStore.emit( AppConstants.CHANGE_EVENT );
+	      break;
+
+	    /**
+	     *
+	     */
+	    case AppConstants.TODO_SELECT:
+	      console.log( 'TodoStore 選取: ', action.item );
+
+	      // 選取同樣的 item 就不用處理下去了
+	      if( selectedItem != action.item ){
+	          selectedItem = action.item;
+	          TodoStore.emit( AppConstants.CHANGE_EVENT );
+	      }
+
+	      break;
+
+	    default:
+	        //
+	  }
+
+	});
 
 	module.exports = TodoStore;
 
@@ -517,6 +603,49 @@
 
 /***/ },
 /* 10 */
+/***/ function(module, exports, __webpack_require__) {
+
+	'use strict';
+
+	function ToObject(val) {
+		if (val == null) {
+			throw new TypeError('Object.assign cannot be called with null or undefined');
+		}
+
+		return Object(val);
+	}
+
+	module.exports = Object.assign || function (target, source) {
+		var pendingException;
+		var from;
+		var keys;
+		var to = ToObject(target);
+
+		for (var s = 1; s < arguments.length; s++) {
+			from = arguments[s];
+			keys = Object.keys(Object(from));
+
+			for (var i = 0; i < keys.length; i++) {
+				try {
+					to[keys[i]] = from[keys[i]];
+				} catch (err) {
+					if (pendingException === undefined) {
+						pendingException = err;
+					}
+				}
+			}
+		}
+
+		if (pendingException) {
+			throw pendingException;
+		}
+
+		return to;
+	};
+
+
+/***/ },
+/* 11 */
 /***/ function(module, exports, __webpack_require__) {
 
 	// Copyright Joyent, Inc. and other Node contributors.
@@ -823,49 +952,6 @@
 
 
 /***/ },
-/* 11 */
-/***/ function(module, exports, __webpack_require__) {
-
-	'use strict';
-
-	function ToObject(val) {
-		if (val == null) {
-			throw new TypeError('Object.assign cannot be called with null or undefined');
-		}
-
-		return Object(val);
-	}
-
-	module.exports = Object.assign || function (target, source) {
-		var pendingException;
-		var from;
-		var keys;
-		var to = ToObject(target);
-
-		for (var s = 1; s < arguments.length; s++) {
-			from = arguments[s];
-			keys = Object.keys(Object(from));
-
-			for (var i = 0; i < keys.length; i++) {
-				try {
-					to[keys[i]] = from[keys[i]];
-				} catch (err) {
-					if (pendingException === undefined) {
-						pendingException = err;
-					}
-				}
-			}
-		}
-
-		if (pendingException) {
-			throw pendingException;
-		}
-
-		return to;
-	};
-
-
-/***/ },
 /* 12 */
 /***/ function(module, exports, __webpack_require__) {
 
@@ -921,7 +1007,7 @@
 
 	module.exports = keyMirror;
 	
-	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(22)))
+	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(23)))
 
 /***/ },
 /* 13 */
@@ -1118,7 +1204,7 @@
 	 * of patent rights can be found in the PATENTS file in the same directory.
 	 */
 
-	module.exports.Dispatcher = __webpack_require__(23)
+	module.exports.Dispatcher = __webpack_require__(22)
 
 
 /***/ },
@@ -2091,7 +2177,7 @@
 	      this['ES6Promise'] = es6$promise$umd$$ES6Promise;
 	    }
 	}).call(this);
-	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(22), (function() { return this; }()), __webpack_require__(25)(module)))
+	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(23), (function() { return this; }()), __webpack_require__(25)(module)))
 
 /***/ },
 /* 20 */
@@ -2151,7 +2237,7 @@
 
 	module.exports = invariant;
 	
-	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(22)))
+	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(23)))
 
 /***/ },
 /* 21 */
@@ -2176,75 +2262,6 @@
 
 /***/ },
 /* 22 */
-/***/ function(module, exports, __webpack_require__) {
-
-	// shim for using process in browser
-
-	var process = module.exports = {};
-
-	process.nextTick = (function () {
-	    var canSetImmediate = typeof window !== 'undefined'
-	    && window.setImmediate;
-	    var canPost = typeof window !== 'undefined'
-	    && window.postMessage && window.addEventListener
-	    ;
-
-	    if (canSetImmediate) {
-	        return function (f) { return window.setImmediate(f) };
-	    }
-
-	    if (canPost) {
-	        var queue = [];
-	        window.addEventListener('message', function (ev) {
-	            var source = ev.source;
-	            if ((source === window || source === null) && ev.data === 'process-tick') {
-	                ev.stopPropagation();
-	                if (queue.length > 0) {
-	                    var fn = queue.shift();
-	                    fn();
-	                }
-	            }
-	        }, true);
-
-	        return function nextTick(fn) {
-	            queue.push(fn);
-	            window.postMessage('process-tick', '*');
-	        };
-	    }
-
-	    return function nextTick(fn) {
-	        setTimeout(fn, 0);
-	    };
-	})();
-
-	process.title = 'browser';
-	process.browser = true;
-	process.env = {};
-	process.argv = [];
-
-	function noop() {}
-
-	process.on = noop;
-	process.addListener = noop;
-	process.once = noop;
-	process.off = noop;
-	process.removeListener = noop;
-	process.removeAllListeners = noop;
-	process.emit = noop;
-
-	process.binding = function (name) {
-	    throw new Error('process.binding is not supported');
-	}
-
-	// TODO(shtylman)
-	process.cwd = function () { return '/' };
-	process.chdir = function (dir) {
-	    throw new Error('process.chdir is not supported');
-	};
-
-
-/***/ },
-/* 23 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/*
@@ -2497,6 +2514,75 @@
 
 
 	module.exports = Dispatcher;
+
+
+/***/ },
+/* 23 */
+/***/ function(module, exports, __webpack_require__) {
+
+	// shim for using process in browser
+
+	var process = module.exports = {};
+
+	process.nextTick = (function () {
+	    var canSetImmediate = typeof window !== 'undefined'
+	    && window.setImmediate;
+	    var canPost = typeof window !== 'undefined'
+	    && window.postMessage && window.addEventListener
+	    ;
+
+	    if (canSetImmediate) {
+	        return function (f) { return window.setImmediate(f) };
+	    }
+
+	    if (canPost) {
+	        var queue = [];
+	        window.addEventListener('message', function (ev) {
+	            var source = ev.source;
+	            if ((source === window || source === null) && ev.data === 'process-tick') {
+	                ev.stopPropagation();
+	                if (queue.length > 0) {
+	                    var fn = queue.shift();
+	                    fn();
+	                }
+	            }
+	        }, true);
+
+	        return function nextTick(fn) {
+	            queue.push(fn);
+	            window.postMessage('process-tick', '*');
+	        };
+	    }
+
+	    return function nextTick(fn) {
+	        setTimeout(fn, 0);
+	    };
+	})();
+
+	process.title = 'browser';
+	process.browser = true;
+	process.env = {};
+	process.argv = [];
+
+	function noop() {}
+
+	process.on = noop;
+	process.addListener = noop;
+	process.once = noop;
+	process.off = noop;
+	process.removeListener = noop;
+	process.removeAllListeners = noop;
+	process.emit = noop;
+
+	process.binding = function (name) {
+	    throw new Error('process.binding is not supported');
+	}
+
+	// TODO(shtylman)
+	process.cwd = function () { return '/' };
+	process.chdir = function (dir) {
+	    throw new Error('process.chdir is not supported');
+	};
 
 
 /***/ },

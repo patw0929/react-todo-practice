@@ -47,13 +47,7 @@ var MainApp = React.createClass({
 
     // 這是 component API, 在 mount 前會跑一次，取值做為 this.state 的預設值
     getInitialState: function () {
-        return {
-          arrTodos: [
-            { name: '吃飯', created: Date.now(), uid: 1 },
-            { name: '睡覺', created: Date.now(), uid: 2 },
-            { name: '打東東', created: Date.now(), uid: 3 }
-          ]
-        };
+      return this._getState();
     },
 
     /**
@@ -129,6 +123,11 @@ var MainApp = React.createClass({
     //
     // private methods - 處理元件內部的事件
 
+    _getState: function () {
+      return {
+        arrTodos: TodoStore.getTodos()
+      }
+    }
 
 });
 
