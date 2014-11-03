@@ -8,7 +8,7 @@ var ListItem = React.createClass({
 
   render: function () {
     return (
-      <div>
+      <div onClick={this.props.onClick}>
         <span>{this.props.item.uid} {this.props.item.name}</span>
       </div>
     );
