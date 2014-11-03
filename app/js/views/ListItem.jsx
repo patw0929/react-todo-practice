@@ -9,7 +9,7 @@ var ListItem = React.createClass({
   render: function () {
     return (
       <div>
-        <span>{this.props.key}</span>
+        <span>{this.props.item.uid} {this.props.item.name}</span>
       </div>
     );
   }

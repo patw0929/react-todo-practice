@@ -11,9 +11,14 @@ var List = React.createClass({
     var arrTodos = this.props.truth.arrTodos;
 
     var arr = arrTodos.map(function (item) {
-      return <ListItem
-              key={item.uid} />
-    });
+      return <ListItem key={item.uid} item={item} />
+    }, this);
+
+    return (
+      <div className="todo-list">
+        {arr}
+      </div>
+    );
   }
 
 });

@@ -5,9 +5,10 @@
 
 //========================================================================
 //
-// import 
+// import
 
 var Header = React.createFactory( require('./Header.jsx') );
+var List = React.createFactory( require('./List.jsx') );
 var Footer = React.createFactory( require('./Footer.jsx') );
 
 
@@ -41,10 +42,16 @@ var MainApp = React.createClass({
     //========================================================================
     //
     // mount
-    
+
     // 這是 component API, 在 mount 前會跑一次，取值做為 this.state 的預設值
     getInitialState: function () {
-        return {};
+        return {
+          arrTodos: [
+            { name: '吃飯', created: Date.now(), uid: 1 },
+            { name: '睡覺', created: Date.now(), uid: 2 },
+            { name: '打東東', created: Date.now(), uid: 3 }
+          ]
+        };
     },
 
     /**
@@ -56,7 +63,7 @@ var MainApp = React.createClass({
     // 重要：root view 建立後第一件事，就是偵聽 store 的 change 事件
     componentDidMount: function() {
         //
-    },  
+    },
 
     //========================================================================
     //
@@ -88,7 +95,7 @@ var MainApp = React.createClass({
     },
 
     /**
-     * 
+     *
      */
     componentDidUpdate: function(prevProps, prevState) {
         console.log( '\tMainAPP > didUpdate' );
@@ -103,12 +110,14 @@ var MainApp = React.createClass({
         console.log( '\tMainApp > render' );
 
         return (
-            
+
             <div className="wrapper">
                 <Header />
-                
+
+                <List truth={this.state} />
+
                 <Footer />
-            </div>    
+            </div>
         )
     },
 

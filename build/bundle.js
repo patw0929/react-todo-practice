@@ -76,10 +76,11 @@
 
 	//========================================================================
 	//
-	// import 
+	// import
 
 	var Header = React.createFactory( __webpack_require__(2) );
-	var Footer = React.createFactory( __webpack_require__(3) );
+	var List = React.createFactory( __webpack_require__(3) );
+	var Footer = React.createFactory( __webpack_require__(4) );
 
 
 
@@ -112,10 +113,16 @@
 	    //========================================================================
 	    //
 	    // mount
-	    
+
 	    // 這是 component API, 在 mount 前會跑一次，取值做為 this.state 的預設值
 	    getInitialState: function () {
-	        return {};
+	        return {
+	          arrTodos: [
+	            { name: '吃飯', created: Date.now(), uid: 1 },
+	            { name: '睡覺', created: Date.now(), uid: 2 },
+	            { name: '打東東', created: Date.now(), uid: 3 }
+	          ]
+	        };
 	    },
 
 	    /**
@@ -127,7 +134,7 @@
 	    // 重要：root view 建立後第一件事，就是偵聽 store 的 change 事件
 	    componentDidMount: function() {
 	        //
-	    },  
+	    },
 
 	    //========================================================================
 	    //
@@ -159,7 +166,7 @@
 	    },
 
 	    /**
-	     * 
+	     *
 	     */
 	    componentDidUpdate: function(prevProps, prevState) {
 	        console.log( '\tMainAPP > didUpdate' );
@@ -174,12 +181,14 @@
 	        console.log( '\tMainApp > render' );
 
 	        return (
-	            
+
 	            React.createElement("div", {className: "wrapper"}, 
 	                React.createElement(Header, null), 
-	                
+
+	                React.createElement(List, {truth: this.state}), 
+
 	                React.createElement(Footer, null)
-	            )    
+	            )
 	        )
 	    },
 
@@ -203,8 +212,8 @@
 	 *
 	 */
 
-	var actions = __webpack_require__(4);
-	var styles = __webpack_require__(7);
+	var actions = __webpack_require__(6);
+	var styles = __webpack_require__(11);
 
 	var Header = React.createClass({displayName: 'Header',
 
@@ -235,8 +244,40 @@
 	/**
 	 *
 	 */
+
+	var actions = __webpack_require__(6);
+	var ListItem = React.createFactory(__webpack_require__(5));
+
+	var List = React.createClass({displayName: 'List',
+
+	  render: function () {
+	    var arrTodos = this.props.truth.arrTodos;
+
+	    var arr = arrTodos.map(function (item) {
+	      return React.createElement(ListItem, {key: item.uid, item: item})
+	    }, this);
+
+	    return (
+	      React.createElement("div", {className: "todo-list"}, 
+	        arr
+	      )
+	    );
+	  }
+
+	});
+
+	module.exports = List;
+
+
+/***/ },
+/* 4 */
+/***/ function(module, exports, __webpack_require__) {
+
+	/**
+	 *
+	 */
 	var ReactPropTypes = React.PropTypes;
-	var actions = __webpack_require__(4);
+	var actions = __webpack_require__(6);
 	var styles = __webpack_require__(9);
 
 	var Footer = React.createClass({displayName: 'Footer',
@@ -265,15 +306,40 @@
 
 
 /***/ },
-/* 4 */
+/* 5 */
+/***/ function(module, exports, __webpack_require__) {
+
+	/**
+	 *
+	 */
+
+	var actions = __webpack_require__(6);
+
+	var ListItem = React.createClass({displayName: 'ListItem',
+
+	  render: function () {
+	    return (
+	      React.createElement("div", null, 
+	        React.createElement("span", null, this.props.item.uid, " ", this.props.item.name)
+	      )
+	    );
+	  }
+
+	});
+
+	module.exports = ListItem;
+
+
+/***/ },
+/* 6 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/**
 	 * 
 	 */
-	var AppDispatcher = __webpack_require__(5);
-	var AppConstants = __webpack_require__(6);
-	var Promise = __webpack_require__(12).Promise;
+	var AppDispatcher = __webpack_require__(7);
+	var AppConstants = __webpack_require__(8);
+	var Promise = __webpack_require__(14).Promise;
 
 	// 就是個單純的 hash table
 	// 因此下面所有指令皆可視為 Action static method
@@ -336,13 +402,13 @@
 
 
 /***/ },
-/* 5 */
+/* 7 */
 /***/ function(module, exports, __webpack_require__) {
 
 	
-	var AppConstants = __webpack_require__(6);
+	var AppConstants = __webpack_require__(8);
 
-	var Dispatcher = __webpack_require__(14).Dispatcher;
+	var Dispatcher = __webpack_require__(16).Dispatcher;
 
 
 	/**
@@ -396,14 +462,14 @@
 
 
 /***/ },
-/* 6 */
+/* 8 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/**
 	 * TodoConstants
 	 */
 
-	var keyMirror = __webpack_require__(15);
+	var keyMirror = __webpack_require__(17);
 
 	// Constructs an enumeration with keys equal to their value.
 	// 也就是讓 hash 的 key 與 value 值一樣
@@ -420,36 +486,6 @@
 
 
 /***/ },
-/* 7 */
-/***/ function(module, exports, __webpack_require__) {
-
-	// style-loader: Adds some css to the DOM by adding a <style> tag
-
-	// load the styles
-	var content = __webpack_require__(8);
-	if(typeof content === 'string') content = [[module.id, content, '']];
-	// add the styles to the DOM
-	var update = __webpack_require__(11)(content);
-	// Hot Module Replacement
-	if(false) {
-		// When the styles change, update the <style> tags
-		module.hot.accept("!!/Users/gogolook/Projects/react-todo-practice/node_modules/css-loader/index.js!/Users/gogolook/Projects/react-todo-practice/node_modules/sass-loader/index.js!/Users/gogolook/Projects/react-todo-practice/app/assets/sass/views/Header.scss", function() {
-			var newContent = require("!!/Users/gogolook/Projects/react-todo-practice/node_modules/css-loader/index.js!/Users/gogolook/Projects/react-todo-practice/node_modules/sass-loader/index.js!/Users/gogolook/Projects/react-todo-practice/app/assets/sass/views/Header.scss");
-			if(typeof newContent === 'string') newContent = [module.id, newContent, ''];
-			update(newContent);
-		});
-		// When the module is disposed, remove the <style> tags
-		module.hot.dispose(function() { update(); });
-	}
-
-/***/ },
-/* 8 */
-/***/ function(module, exports, __webpack_require__) {
-
-	exports = module.exports = __webpack_require__(13)();
-	exports.push([module.id, "header.header h1{text-align:center;background-color:#12c46e;line-height:60px}", ""]);
-
-/***/ },
 /* 9 */
 /***/ function(module, exports, __webpack_require__) {
 
@@ -459,7 +495,7 @@
 	var content = __webpack_require__(10);
 	if(typeof content === 'string') content = [[module.id, content, '']];
 	// add the styles to the DOM
-	var update = __webpack_require__(11)(content);
+	var update = __webpack_require__(13)(content);
 	// Hot Module Replacement
 	if(false) {
 		// When the styles change, update the <style> tags
@@ -476,11 +512,41 @@
 /* 10 */
 /***/ function(module, exports, __webpack_require__) {
 
-	exports = module.exports = __webpack_require__(13)();
+	exports = module.exports = __webpack_require__(15)();
 	exports.push([module.id, "footer.footer{position:fixed;bottom:0;background-color:#6b4308;color:#fff;text-align:center;line-height:60px;width:100%}", ""]);
 
 /***/ },
 /* 11 */
+/***/ function(module, exports, __webpack_require__) {
+
+	// style-loader: Adds some css to the DOM by adding a <style> tag
+
+	// load the styles
+	var content = __webpack_require__(12);
+	if(typeof content === 'string') content = [[module.id, content, '']];
+	// add the styles to the DOM
+	var update = __webpack_require__(13)(content);
+	// Hot Module Replacement
+	if(false) {
+		// When the styles change, update the <style> tags
+		module.hot.accept("!!/Users/gogolook/Projects/react-todo-practice/node_modules/css-loader/index.js!/Users/gogolook/Projects/react-todo-practice/node_modules/sass-loader/index.js!/Users/gogolook/Projects/react-todo-practice/app/assets/sass/views/Header.scss", function() {
+			var newContent = require("!!/Users/gogolook/Projects/react-todo-practice/node_modules/css-loader/index.js!/Users/gogolook/Projects/react-todo-practice/node_modules/sass-loader/index.js!/Users/gogolook/Projects/react-todo-practice/app/assets/sass/views/Header.scss");
+			if(typeof newContent === 'string') newContent = [module.id, newContent, ''];
+			update(newContent);
+		});
+		// When the module is disposed, remove the <style> tags
+		module.hot.dispose(function() { update(); });
+	}
+
+/***/ },
+/* 12 */
+/***/ function(module, exports, __webpack_require__) {
+
+	exports = module.exports = __webpack_require__(15)();
+	exports.push([module.id, "header.header h1{text-align:center;background-color:#12c46e;line-height:60px}", ""]);
+
+/***/ },
+/* 13 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/*
@@ -602,7 +668,7 @@
 
 
 /***/ },
-/* 12 */
+/* 14 */
 /***/ function(module, exports, __webpack_require__) {
 
 	var __WEBPACK_AMD_DEFINE_RESULT__;/* WEBPACK VAR INJECTION */(function(process, global, module) {/*!
@@ -1563,7 +1629,7 @@
 	    };
 
 	    /* global define:true module:true window: true */
-	    if ("function" === 'function' && __webpack_require__(18)['amd']) {
+	    if ("function" === 'function' && __webpack_require__(20)['amd']) {
 	      !(__WEBPACK_AMD_DEFINE_RESULT__ = function() { return es6$promise$umd$$ES6Promise; }.call(exports, __webpack_require__, exports, module), __WEBPACK_AMD_DEFINE_RESULT__ !== undefined && (module.exports = __WEBPACK_AMD_DEFINE_RESULT__));
 	    } else if (typeof module !== 'undefined' && module['exports']) {
 	      module['exports'] = es6$promise$umd$$ES6Promise;
@@ -1571,10 +1637,10 @@
 	      this['ES6Promise'] = es6$promise$umd$$ES6Promise;
 	    }
 	}).call(this);
-	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(16), (function() { return this; }()), __webpack_require__(19)(module)))
+	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(18), (function() { return this; }()), __webpack_require__(21)(module)))
 
 /***/ },
-/* 13 */
+/* 15 */
 /***/ function(module, exports, __webpack_require__) {
 
 	module.exports = function() {
@@ -1595,7 +1661,7 @@
 	}
 
 /***/ },
-/* 14 */
+/* 16 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/**
@@ -1607,11 +1673,11 @@
 	 * of patent rights can be found in the PATENTS file in the same directory.
 	 */
 
-	module.exports.Dispatcher = __webpack_require__(17)
+	module.exports.Dispatcher = __webpack_require__(19)
 
 
 /***/ },
-/* 15 */
+/* 17 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/* WEBPACK VAR INJECTION */(function(process) {/**
@@ -1628,7 +1694,7 @@
 
 	"use strict";
 
-	var invariant = __webpack_require__(20);
+	var invariant = __webpack_require__(22);
 
 	/**
 	 * Constructs an enumeration with keys equal to their value.
@@ -1666,10 +1732,10 @@
 
 	module.exports = keyMirror;
 	
-	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(16)))
+	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(18)))
 
 /***/ },
-/* 16 */
+/* 18 */
 /***/ function(module, exports, __webpack_require__) {
 
 	// shim for using process in browser
@@ -1738,7 +1804,7 @@
 
 
 /***/ },
-/* 17 */
+/* 19 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/*
@@ -1755,7 +1821,7 @@
 
 	"use strict";
 
-	var invariant = __webpack_require__(21);
+	var invariant = __webpack_require__(23);
 
 	var _lastID = 1;
 	var _prefix = 'ID_';
@@ -1994,14 +2060,14 @@
 
 
 /***/ },
-/* 18 */
+/* 20 */
 /***/ function(module, exports, __webpack_require__) {
 
 	module.exports = function() { throw new Error("define cannot be used indirect"); };
 
 
 /***/ },
-/* 19 */
+/* 21 */
 /***/ function(module, exports, __webpack_require__) {
 
 	module.exports = function(module) {
@@ -2017,7 +2083,7 @@
 
 
 /***/ },
-/* 20 */
+/* 22 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/* WEBPACK VAR INJECTION */(function(process) {/**
@@ -2074,10 +2140,10 @@
 
 	module.exports = invariant;
 	
-	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(16)))
+	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(18)))
 
 /***/ },
-/* 21 */
+/* 23 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/**
