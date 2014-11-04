@@ -4,8 +4,10 @@
 
 var actions = require('../actions/AppActionCreator');
 var shortId = require('shortid');
+var mui = require('material-ui');
+var PaperButton = mui.PaperButton;
 
-var styles = require('../../assets/sass/views/InputBox.scss');
+require('../../assets/sass/views/InputBox.scss');
 
 var InputBox = React.createClass({
   getInitialState: function () {
@@ -17,16 +19,25 @@ var InputBox = React.createClass({
     }
   },
 
+  componentDidMount: function() {
+    this.refs.todo.getDOMNode().addEventListener('keydown', this.handleKeydown);
+  },
+
+  componentWillUnmount: function() {
+    this.refs.todo.getDOMNode.removeEventListener('keydown', this.handleKeydown);
+  },
+
   render: function () {
     return (
       <div className="inputbox">
-        <input type="text" name="inputbox"
-                           value={this.state.inputData.value}
-                           placeholder="請輸入待辦事項"
+        <mui.Input onChange={this.handleChange}
+                   onKeyDown={this.handleKeydown}
 
-                           onChange={this.handleChange}
-                           onKeyDown={this.handleKeydown} />
-        <button type="submit" onClick={this.handleClick}>新增</button>
+                   ref="todo" type="text" name="inputbox"
+                   placeholder="請輸入待辦事項"
+                   description="輸入完畢請點選新增。" />
+
+        <PaperButton className="button" type={PaperButton.Types.RAISED} label="新增" primary={true} onClick={this.handleClick} />
       </div>
     );
   },
@@ -68,6 +79,8 @@ var InputBox = React.createClass({
         created: null
       }
     });
+
+    this.refs.todo.setValue('');
   },
 
   handleClick: function (e) {
