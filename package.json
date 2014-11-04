@@ -20,6 +20,8 @@
     "gulp-notify": "^2.0.0",
     "gulp-webpack": "^1.0.0",
     "jsx-loader": "^0.12.1",
+    "less": "^1.7.5",
+    "less-loader": "^0.7.7",
     "material-ui": "^0.1.28",
     "object-assign": "^1.0.0",
     "react": "^0.12.0",
