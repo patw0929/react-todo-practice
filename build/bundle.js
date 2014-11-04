@@ -222,8 +222,8 @@
 	 *
 	 */
 
-	var actions = __webpack_require__(9);
-	var styles = __webpack_require__(14);
+	var actions = __webpack_require__(8);
+	var styles = __webpack_require__(16);
 
 	var Header = React.createClass({displayName: 'Header',
 
@@ -255,17 +255,64 @@
 	 *
 	 */
 
-	var actions = __webpack_require__(9);
-	var styles = __webpack_require__(16);
+	var actions = __webpack_require__(8);
+	var styles = __webpack_require__(14);
 
 	var InputBox = React.createClass({displayName: 'InputBox',
+	  getInitialState: function () {
+	    return {
+	      inputData: {
+	        value: '',
+	        created: null
+	      }
+	    }
+	  },
+
 	  render: function () {
 	    return (
 	      React.createElement("div", {className: "inputbox"}, 
-	        React.createElement("input", {type: "text", name: "inputbox", placeholder: "請輸入待辦事項"}), 
-	        React.createElement("button", {type: "submit"}, "新增")
+	        React.createElement("input", {type: "text", name: "inputbox", 
+	                           value: this.state.inputData.value, 
+	                           placeholder: "請輸入待辦事項", 
+
+	                           onChange: this.handleChange, 
+	                           onKeydown: this.handleKeydown}), 
+	        React.createElement("button", {type: "submit", onClick: this.handleClick}, "新增")
 	      )
 	    );
+	  },
+
+	  handleChange: function (e) {
+	    this.setState({
+	      inputData: {
+	        value: e.target.value,
+	        created: Date.now()
+	      }
+	    })
+	  },
+
+	  handleKeydown: function (e) {
+	    e.preventDefault();
+
+	    if (e.keyCode === 13) {
+	      this.handleSave();
+	    }
+	  },
+
+	  handleSave: function () {
+	    var item = this.state.inputData;
+	    if (item.value.trim().length === 0) {
+	      return false;
+	    }
+
+	    console.log("儲存");
+	  },
+
+	  handleClick: function (e) {
+	    e.preventDefault();
+
+	    console.log('點擊!', this.state.inputData);
+	    this.handleSave();
 	  }
 
 	});
@@ -281,8 +328,8 @@
 	 *
 	 */
 
-	var actions = __webpack_require__(9);
-	var ListItem = React.createFactory(__webpack_require__(8));
+	var actions = __webpack_require__(8);
+	var ListItem = React.createFactory(__webpack_require__(9));
 	var styles = __webpack_require__(20);
 
 	var List = React.createClass({displayName: 'List',
@@ -323,7 +370,7 @@
 	 *
 	 */
 	var ReactPropTypes = React.PropTypes;
-	var actions = __webpack_require__(9);
+	var actions = __webpack_require__(8);
 	var styles = __webpack_require__(18);
 
 	var Footer = React.createClass({displayName: 'Footer',
@@ -365,10 +412,10 @@
 
 	var AppDispatcher = __webpack_require__(10);
 	var AppConstants = __webpack_require__(7);
-	var actions = __webpack_require__(9);
+	var actions = __webpack_require__(8);
 
-	var objectAssign = __webpack_require__(11);
-	var EventEmitter = __webpack_require__(12).EventEmitter; // 取得一個 pub/sub 廣播器
+	var objectAssign = __webpack_require__(12);
+	var EventEmitter = __webpack_require__(11).EventEmitter; // 取得一個 pub/sub 廣播器
 
 	var arrTodos = [
 	  { name: '吃飯', created: Date.now(), uid: 1 },
@@ -498,35 +545,6 @@
 	/**
 	 *
 	 */
-
-	var actions = __webpack_require__(9);
-
-	var ListItem = React.createClass({displayName: 'ListItem',
-	  render: function () {
-	    var cx = React.addons.classSet;
-	    var classes = cx({
-	      'selected': this.props.selected
-	    });
-
-	    return (
-	      React.createElement("div", {onClick: this.props.onClick}, 
-	        React.createElement("span", {className: classes}, this.props.item.uid, " ", this.props.item.name, " ", this.props.selected ? "XD" : "QQ")
-	      )
-	    );
-	  }
-
-	});
-
-	module.exports = ListItem;
-
-
-/***/ },
-/* 9 */
-/***/ function(module, exports, __webpack_require__) {
-
-	/**
-	 *
-	 */
 	var AppDispatcher = __webpack_require__(10);
 	var AppConstants = __webpack_require__(7);
 	var Promise = __webpack_require__(24).Promise;
@@ -554,6 +572,35 @@
 	};
 
 	module.exports = AppActionCreators;
+
+
+/***/ },
+/* 9 */
+/***/ function(module, exports, __webpack_require__) {
+
+	/**
+	 *
+	 */
+
+	var actions = __webpack_require__(8);
+
+	var ListItem = React.createClass({displayName: 'ListItem',
+	  render: function () {
+	    var cx = React.addons.classSet;
+	    var classes = cx({
+	      'selected': this.props.selected
+	    });
+
+	    return (
+	      React.createElement("div", {onClick: this.props.onClick}, 
+	        React.createElement("span", {className: classes}, this.props.item.uid, " ", this.props.item.name, " ", this.props.selected ? "XD" : "QQ")
+	      )
+	    );
+	  }
+
+	});
+
+	module.exports = ListItem;
 
 
 /***/ },
@@ -618,49 +665,6 @@
 
 /***/ },
 /* 11 */
-/***/ function(module, exports, __webpack_require__) {
-
-	'use strict';
-
-	function ToObject(val) {
-		if (val == null) {
-			throw new TypeError('Object.assign cannot be called with null or undefined');
-		}
-
-		return Object(val);
-	}
-
-	module.exports = Object.assign || function (target, source) {
-		var pendingException;
-		var from;
-		var keys;
-		var to = ToObject(target);
-
-		for (var s = 1; s < arguments.length; s++) {
-			from = arguments[s];
-			keys = Object.keys(Object(from));
-
-			for (var i = 0; i < keys.length; i++) {
-				try {
-					to[keys[i]] = from[keys[i]];
-				} catch (err) {
-					if (pendingException === undefined) {
-						pendingException = err;
-					}
-				}
-			}
-		}
-
-		if (pendingException) {
-			throw pendingException;
-		}
-
-		return to;
-	};
-
-
-/***/ },
-/* 12 */
 /***/ function(module, exports, __webpack_require__) {
 
 	// Copyright Joyent, Inc. and other Node contributors.
@@ -967,6 +971,49 @@
 
 
 /***/ },
+/* 12 */
+/***/ function(module, exports, __webpack_require__) {
+
+	'use strict';
+
+	function ToObject(val) {
+		if (val == null) {
+			throw new TypeError('Object.assign cannot be called with null or undefined');
+		}
+
+		return Object(val);
+	}
+
+	module.exports = Object.assign || function (target, source) {
+		var pendingException;
+		var from;
+		var keys;
+		var to = ToObject(target);
+
+		for (var s = 1; s < arguments.length; s++) {
+			from = arguments[s];
+			keys = Object.keys(Object(from));
+
+			for (var i = 0; i < keys.length; i++) {
+				try {
+					to[keys[i]] = from[keys[i]];
+				} catch (err) {
+					if (pendingException === undefined) {
+						pendingException = err;
+					}
+				}
+			}
+		}
+
+		if (pendingException) {
+			throw pendingException;
+		}
+
+		return to;
+	};
+
+
+/***/ },
 /* 13 */
 /***/ function(module, exports, __webpack_require__) {
 
@@ -1038,8 +1085,8 @@
 	// Hot Module Replacement
 	if(false) {
 		// When the styles change, update the <style> tags
-		module.hot.accept("!!/Users/gogolook/Projects/react-todo-practice/node_modules/css-loader/index.js!/Users/gogolook/Projects/react-todo-practice/node_modules/sass-loader/index.js!/Users/gogolook/Projects/react-todo-practice/app/assets/sass/views/Header.scss", function() {
-			var newContent = require("!!/Users/gogolook/Projects/react-todo-practice/node_modules/css-loader/index.js!/Users/gogolook/Projects/react-todo-practice/node_modules/sass-loader/index.js!/Users/gogolook/Projects/react-todo-practice/app/assets/sass/views/Header.scss");
+		module.hot.accept("!!/Users/gogolook/Projects/react-todo-practice/node_modules/css-loader/index.js!/Users/gogolook/Projects/react-todo-practice/node_modules/sass-loader/index.js!/Users/gogolook/Projects/react-todo-practice/app/assets/sass/views/InputBox.scss", function() {
+			var newContent = require("!!/Users/gogolook/Projects/react-todo-practice/node_modules/css-loader/index.js!/Users/gogolook/Projects/react-todo-practice/node_modules/sass-loader/index.js!/Users/gogolook/Projects/react-todo-practice/app/assets/sass/views/InputBox.scss");
 			if(typeof newContent === 'string') newContent = [module.id, newContent, ''];
 			update(newContent);
 		});
@@ -1052,7 +1099,7 @@
 /***/ function(module, exports, __webpack_require__) {
 
 	exports = module.exports = __webpack_require__(26)();
-	exports.push([module.id, "header.header h1{text-align:center;background-color:#12c46e;line-height:60px}", ""]);
+	exports.push([module.id, ".inputbox{margin:10px auto;text-align:center}.inputbox input[type=\"text\"]{width:90%;font-size:16px;padding:10px}.inputbox button[type=\"submit\"]{width:5%;min-width:85px;font-size:16px;line-height:42px;border-radius:5px;border:0;background-color:#eee;margin-left:10px}", ""]);
 
 /***/ },
 /* 16 */
@@ -1068,8 +1115,8 @@
 	// Hot Module Replacement
 	if(false) {
 		// When the styles change, update the <style> tags
-		module.hot.accept("!!/Users/gogolook/Projects/react-todo-practice/node_modules/css-loader/index.js!/Users/gogolook/Projects/react-todo-practice/node_modules/sass-loader/index.js!/Users/gogolook/Projects/react-todo-practice/app/assets/sass/views/InputBox.scss", function() {
-			var newContent = require("!!/Users/gogolook/Projects/react-todo-practice/node_modules/css-loader/index.js!/Users/gogolook/Projects/react-todo-practice/node_modules/sass-loader/index.js!/Users/gogolook/Projects/react-todo-practice/app/assets/sass/views/InputBox.scss");
+		module.hot.accept("!!/Users/gogolook/Projects/react-todo-practice/node_modules/css-loader/index.js!/Users/gogolook/Projects/react-todo-practice/node_modules/sass-loader/index.js!/Users/gogolook/Projects/react-todo-practice/app/assets/sass/views/Header.scss", function() {
+			var newContent = require("!!/Users/gogolook/Projects/react-todo-practice/node_modules/css-loader/index.js!/Users/gogolook/Projects/react-todo-practice/node_modules/sass-loader/index.js!/Users/gogolook/Projects/react-todo-practice/app/assets/sass/views/Header.scss");
 			if(typeof newContent === 'string') newContent = [module.id, newContent, ''];
 			update(newContent);
 		});
@@ -1082,7 +1129,7 @@
 /***/ function(module, exports, __webpack_require__) {
 
 	exports = module.exports = __webpack_require__(26)();
-	exports.push([module.id, ".inputbox{margin:10px auto;text-align:center}.inputbox input[type=\"text\"]{width:90%;font-size:16px;padding:10px}.inputbox button[type=\"submit\"]{width:5%;min-width:85px;font-size:16px;line-height:42px;border-radius:5px;border:0;background-color:#eee;margin-left:10px}", ""]);
+	exports.push([module.id, "header.header h1{text-align:center;background-color:#12c46e;line-height:60px}", ""]);
 
 /***/ },
 /* 18 */
