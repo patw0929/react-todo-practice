@@ -80,16 +80,16 @@ var MainApp = React.createClass({
 
     // 在 render() 前執行，有機會可先處理 props 後用 setState() 存起來
     componentWillReceiveProps: function(nextProps) {
-        //
+      //
     },
 
     shouldComponentUpdate: function(nextProps, nextState) {
-        return true;
+      return true;
     },
 
     // 這時已不可用 setState()
     componentWillUpdate: function(nextProps, nextState) {
-        console.log( '\tMainAPP > willUpdate' );
+      console.log( '\tMainAPP > willUpdate' );
     },
 
     /**
@@ -111,7 +111,7 @@ var MainApp = React.createClass({
 
             <div className="wrapper">
               <Header />
-                <InputBox />
+                <InputBox truth={this.state} />
                 <List truth={this.state} />
               <Footer />
             </div>

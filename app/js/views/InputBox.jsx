@@ -23,7 +23,7 @@ var InputBox = React.createClass({
                            placeholder="請輸入待辦事項"
 
                            onChange={this.handleChange}
-                           onKeydown={this.handleKeydown} />
+                           onKeyDown={this.handleKeydown} />
         <button type="submit" onClick={this.handleClick}>新增</button>
       </div>
     );
@@ -39,8 +39,6 @@ var InputBox = React.createClass({
   },
 
   handleKeydown: function (e) {
-    e.preventDefault();
-
     if (e.keyCode === 13) {
       this.handleSave();
     }
@@ -52,7 +50,25 @@ var InputBox = React.createClass({
       return false;
     }
 
+    // retrieve max uid in arrTodos
+    var arrTodos = this.props.truth.arrTodos;
+    var maxUid = arrTodos[arrTodos.length - 1].uid + 1;
+
+    console.log(maxUid);
+
     console.log("儲存");
+    actions.createTodo({
+      name: item.value,
+      created: Date.now(),
+      uid: maxUid
+    });
+
+    this.setState({
+      inputData: {
+        value: '',
+        created: null
+      }
+    });
   },
 
   handleClick: function (e) {

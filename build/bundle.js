@@ -151,16 +151,16 @@
 
 	    // 在 render() 前執行，有機會可先處理 props 後用 setState() 存起來
 	    componentWillReceiveProps: function(nextProps) {
-	        //
+	      //
 	    },
 
 	    shouldComponentUpdate: function(nextProps, nextState) {
-	        return true;
+	      return true;
 	    },
 
 	    // 這時已不可用 setState()
 	    componentWillUpdate: function(nextProps, nextState) {
-	        console.log( '\tMainAPP > willUpdate' );
+	      console.log( '\tMainAPP > willUpdate' );
 	    },
 
 	    /**
@@ -182,7 +182,7 @@
 
 	            React.createElement("div", {className: "wrapper"}, 
 	              React.createElement(Header, null), 
-	                React.createElement(InputBox, null), 
+	                React.createElement(InputBox, {truth: this.state}), 
 	                React.createElement(List, {truth: this.state}), 
 	              React.createElement(Footer, null)
 	            )
@@ -222,8 +222,8 @@
 	 *
 	 */
 
-	var actions = __webpack_require__(8);
-	var styles = __webpack_require__(16);
+	var actions = __webpack_require__(9);
+	var styles = __webpack_require__(20);
 
 	var Header = React.createClass({displayName: 'Header',
 
@@ -255,7 +255,7 @@
 	 *
 	 */
 
-	var actions = __webpack_require__(8);
+	var actions = __webpack_require__(9);
 	var styles = __webpack_require__(14);
 
 	var InputBox = React.createClass({displayName: 'InputBox',
@@ -276,7 +276,7 @@
 	                           placeholder: "請輸入待辦事項", 
 
 	                           onChange: this.handleChange, 
-	                           onKeydown: this.handleKeydown}), 
+	                           onKeyDown: this.handleKeydown}), 
 	        React.createElement("button", {type: "submit", onClick: this.handleClick}, "新增")
 	      )
 	    );
@@ -292,8 +292,6 @@
 	  },
 
 	  handleKeydown: function (e) {
-	    e.preventDefault();
-
 	    if (e.keyCode === 13) {
 	      this.handleSave();
 	    }
@@ -305,7 +303,25 @@
 	      return false;
 	    }
 
+	    // retrieve max uid in arrTodos
+	    var arrTodos = this.props.truth.arrTodos;
+	    var maxUid = arrTodos[arrTodos.length - 1].uid + 1;
+
+	    console.log(maxUid);
+
 	    console.log("儲存");
+	    actions.createTodo({
+	      name: item.value,
+	      created: Date.now(),
+	      uid: maxUid
+	    });
+
+	    this.setState({
+	      inputData: {
+	        value: '',
+	        created: null
+	      }
+	    });
 	  },
 
 	  handleClick: function (e) {
@@ -328,9 +344,9 @@
 	 *
 	 */
 
-	var actions = __webpack_require__(8);
-	var ListItem = React.createFactory(__webpack_require__(9));
-	var styles = __webpack_require__(20);
+	var actions = __webpack_require__(9);
+	var ListItem = React.createFactory(__webpack_require__(8));
+	var styles = __webpack_require__(18);
 
 	var List = React.createClass({displayName: 'List',
 
@@ -370,8 +386,8 @@
 	 *
 	 */
 	var ReactPropTypes = React.PropTypes;
-	var actions = __webpack_require__(8);
-	var styles = __webpack_require__(18);
+	var actions = __webpack_require__(9);
+	var styles = __webpack_require__(16);
 
 	var Footer = React.createClass({displayName: 'Footer',
 
@@ -412,7 +428,7 @@
 
 	var AppDispatcher = __webpack_require__(10);
 	var AppConstants = __webpack_require__(7);
-	var actions = __webpack_require__(8);
+	var actions = __webpack_require__(9);
 
 	var objectAssign = __webpack_require__(12);
 	var EventEmitter = __webpack_require__(11).EventEmitter; // 取得一個 pub/sub 廣播器
@@ -545,44 +561,8 @@
 	/**
 	 *
 	 */
-	var AppDispatcher = __webpack_require__(10);
-	var AppConstants = __webpack_require__(7);
-	var Promise = __webpack_require__(24).Promise;
 
-	// 就是個單純的 hash table
-	// 因此下面所有指令皆可視為 Action static method
-	var AppActionCreators = {
-
-	    /**
-	     * ok
-	     *
-	     * app 啟動後，第一次載入資料
-	     */
-	    load: function(){
-			//
-	    },
-
-	    selectTodo: function (item) {
-	      AppDispatcher.handleViewAction({
-	        actionType: AppConstants.TODO_SELECT,
-	        item: item
-	      });
-	    }
-
-	};
-
-	module.exports = AppActionCreators;
-
-
-/***/ },
-/* 9 */
-/***/ function(module, exports, __webpack_require__) {
-
-	/**
-	 *
-	 */
-
-	var actions = __webpack_require__(8);
+	var actions = __webpack_require__(9);
 
 	var ListItem = React.createClass({displayName: 'ListItem',
 	  render: function () {
@@ -601,6 +581,49 @@
 	});
 
 	module.exports = ListItem;
+
+
+/***/ },
+/* 9 */
+/***/ function(module, exports, __webpack_require__) {
+
+	/**
+	 *
+	 */
+	var AppDispatcher = __webpack_require__(10);
+	var AppConstants = __webpack_require__(7);
+	var Promise = __webpack_require__(24).Promise;
+
+	// 就是個單純的 hash table
+	// 因此下面所有指令皆可視為 Action static method
+	var AppActionCreators = {
+
+	    /**
+	     * ok
+	     *
+	     * app 啟動後，第一次載入資料
+	     */
+	    load: function(){
+			//
+	    },
+
+	    createTodo: function (item) {
+	      AppDispatcher.handleViewAction({
+	        actionType: AppConstants.TODO_CREATE,
+	        item: item
+	      });
+	    },
+
+	    selectTodo: function (item) {
+	      AppDispatcher.handleViewAction({
+	        actionType: AppConstants.TODO_SELECT,
+	        item: item
+	      });
+	    }
+
+	};
+
+	module.exports = AppActionCreators;
 
 
 /***/ },
@@ -1069,7 +1092,7 @@
 
 	module.exports = keyMirror;
 	
-	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(27)))
+	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(28)))
 
 /***/ },
 /* 14 */
@@ -1115,8 +1138,8 @@
 	// Hot Module Replacement
 	if(false) {
 		// When the styles change, update the <style> tags
-		module.hot.accept("!!/Users/gogolook/Projects/react-todo-practice/node_modules/css-loader/index.js!/Users/gogolook/Projects/react-todo-practice/node_modules/sass-loader/index.js!/Users/gogolook/Projects/react-todo-practice/app/assets/sass/views/Header.scss", function() {
-			var newContent = require("!!/Users/gogolook/Projects/react-todo-practice/node_modules/css-loader/index.js!/Users/gogolook/Projects/react-todo-practice/node_modules/sass-loader/index.js!/Users/gogolook/Projects/react-todo-practice/app/assets/sass/views/Header.scss");
+		module.hot.accept("!!/Users/gogolook/Projects/react-todo-practice/node_modules/css-loader/index.js!/Users/gogolook/Projects/react-todo-practice/node_modules/sass-loader/index.js!/Users/gogolook/Projects/react-todo-practice/app/assets/sass/views/Footer.scss", function() {
+			var newContent = require("!!/Users/gogolook/Projects/react-todo-practice/node_modules/css-loader/index.js!/Users/gogolook/Projects/react-todo-practice/node_modules/sass-loader/index.js!/Users/gogolook/Projects/react-todo-practice/app/assets/sass/views/Footer.scss");
 			if(typeof newContent === 'string') newContent = [module.id, newContent, ''];
 			update(newContent);
 		});
@@ -1129,7 +1152,7 @@
 /***/ function(module, exports, __webpack_require__) {
 
 	exports = module.exports = __webpack_require__(26)();
-	exports.push([module.id, "header.header h1{text-align:center;background-color:#12c46e;line-height:60px}", ""]);
+	exports.push([module.id, "footer.footer{position:fixed;bottom:0;background-color:#6b4308;color:#fff;text-align:center;line-height:60px;width:100%}", ""]);
 
 /***/ },
 /* 18 */
@@ -1139,36 +1162,6 @@
 
 	// load the styles
 	var content = __webpack_require__(19);
-	if(typeof content === 'string') content = [[module.id, content, '']];
-	// add the styles to the DOM
-	var update = __webpack_require__(22)(content);
-	// Hot Module Replacement
-	if(false) {
-		// When the styles change, update the <style> tags
-		module.hot.accept("!!/Users/gogolook/Projects/react-todo-practice/node_modules/css-loader/index.js!/Users/gogolook/Projects/react-todo-practice/node_modules/sass-loader/index.js!/Users/gogolook/Projects/react-todo-practice/app/assets/sass/views/Footer.scss", function() {
-			var newContent = require("!!/Users/gogolook/Projects/react-todo-practice/node_modules/css-loader/index.js!/Users/gogolook/Projects/react-todo-practice/node_modules/sass-loader/index.js!/Users/gogolook/Projects/react-todo-practice/app/assets/sass/views/Footer.scss");
-			if(typeof newContent === 'string') newContent = [module.id, newContent, ''];
-			update(newContent);
-		});
-		// When the module is disposed, remove the <style> tags
-		module.hot.dispose(function() { update(); });
-	}
-
-/***/ },
-/* 19 */
-/***/ function(module, exports, __webpack_require__) {
-
-	exports = module.exports = __webpack_require__(26)();
-	exports.push([module.id, "footer.footer{position:fixed;bottom:0;background-color:#6b4308;color:#fff;text-align:center;line-height:60px;width:100%}", ""]);
-
-/***/ },
-/* 20 */
-/***/ function(module, exports, __webpack_require__) {
-
-	// style-loader: Adds some css to the DOM by adding a <style> tag
-
-	// load the styles
-	var content = __webpack_require__(21);
 	if(typeof content === 'string') content = [[module.id, content, '']];
 	// add the styles to the DOM
 	var update = __webpack_require__(22)(content);
@@ -1185,11 +1178,41 @@
 	}
 
 /***/ },
-/* 21 */
+/* 19 */
 /***/ function(module, exports, __webpack_require__) {
 
 	exports = module.exports = __webpack_require__(26)();
 	exports.push([module.id, ".todo-list div>span{display:block;background-color:#eee;padding:10px}.todo-list div>span.selected{background-color:#999}", ""]);
+
+/***/ },
+/* 20 */
+/***/ function(module, exports, __webpack_require__) {
+
+	// style-loader: Adds some css to the DOM by adding a <style> tag
+
+	// load the styles
+	var content = __webpack_require__(21);
+	if(typeof content === 'string') content = [[module.id, content, '']];
+	// add the styles to the DOM
+	var update = __webpack_require__(22)(content);
+	// Hot Module Replacement
+	if(false) {
+		// When the styles change, update the <style> tags
+		module.hot.accept("!!/Users/gogolook/Projects/react-todo-practice/node_modules/css-loader/index.js!/Users/gogolook/Projects/react-todo-practice/node_modules/sass-loader/index.js!/Users/gogolook/Projects/react-todo-practice/app/assets/sass/views/Header.scss", function() {
+			var newContent = require("!!/Users/gogolook/Projects/react-todo-practice/node_modules/css-loader/index.js!/Users/gogolook/Projects/react-todo-practice/node_modules/sass-loader/index.js!/Users/gogolook/Projects/react-todo-practice/app/assets/sass/views/Header.scss");
+			if(typeof newContent === 'string') newContent = [module.id, newContent, ''];
+			update(newContent);
+		});
+		// When the module is disposed, remove the <style> tags
+		module.hot.dispose(function() { update(); });
+	}
+
+/***/ },
+/* 21 */
+/***/ function(module, exports, __webpack_require__) {
+
+	exports = module.exports = __webpack_require__(26)();
+	exports.push([module.id, "header.header h1{text-align:center;background-color:#12c46e;line-height:60px}", ""]);
 
 /***/ },
 /* 22 */
@@ -1326,7 +1349,7 @@
 	 * of patent rights can be found in the PATENTS file in the same directory.
 	 */
 
-	module.exports.Dispatcher = __webpack_require__(28)
+	module.exports.Dispatcher = __webpack_require__(27)
 
 
 /***/ },
@@ -2299,7 +2322,7 @@
 	      this['ES6Promise'] = es6$promise$umd$$ES6Promise;
 	    }
 	}).call(this);
-	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(27), (function() { return this; }()), __webpack_require__(30)(module)))
+	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(28), (function() { return this; }()), __webpack_require__(30)(module)))
 
 /***/ },
 /* 25 */
@@ -2359,7 +2382,7 @@
 
 	module.exports = invariant;
 	
-	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(27)))
+	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(28)))
 
 /***/ },
 /* 26 */
@@ -2384,75 +2407,6 @@
 
 /***/ },
 /* 27 */
-/***/ function(module, exports, __webpack_require__) {
-
-	// shim for using process in browser
-
-	var process = module.exports = {};
-
-	process.nextTick = (function () {
-	    var canSetImmediate = typeof window !== 'undefined'
-	    && window.setImmediate;
-	    var canPost = typeof window !== 'undefined'
-	    && window.postMessage && window.addEventListener
-	    ;
-
-	    if (canSetImmediate) {
-	        return function (f) { return window.setImmediate(f) };
-	    }
-
-	    if (canPost) {
-	        var queue = [];
-	        window.addEventListener('message', function (ev) {
-	            var source = ev.source;
-	            if ((source === window || source === null) && ev.data === 'process-tick') {
-	                ev.stopPropagation();
-	                if (queue.length > 0) {
-	                    var fn = queue.shift();
-	                    fn();
-	                }
-	            }
-	        }, true);
-
-	        return function nextTick(fn) {
-	            queue.push(fn);
-	            window.postMessage('process-tick', '*');
-	        };
-	    }
-
-	    return function nextTick(fn) {
-	        setTimeout(fn, 0);
-	    };
-	})();
-
-	process.title = 'browser';
-	process.browser = true;
-	process.env = {};
-	process.argv = [];
-
-	function noop() {}
-
-	process.on = noop;
-	process.addListener = noop;
-	process.once = noop;
-	process.off = noop;
-	process.removeListener = noop;
-	process.removeAllListeners = noop;
-	process.emit = noop;
-
-	process.binding = function (name) {
-	    throw new Error('process.binding is not supported');
-	}
-
-	// TODO(shtylman)
-	process.cwd = function () { return '/' };
-	process.chdir = function (dir) {
-	    throw new Error('process.chdir is not supported');
-	};
-
-
-/***/ },
-/* 28 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/*
@@ -2705,6 +2659,75 @@
 
 
 	module.exports = Dispatcher;
+
+
+/***/ },
+/* 28 */
+/***/ function(module, exports, __webpack_require__) {
+
+	// shim for using process in browser
+
+	var process = module.exports = {};
+
+	process.nextTick = (function () {
+	    var canSetImmediate = typeof window !== 'undefined'
+	    && window.setImmediate;
+	    var canPost = typeof window !== 'undefined'
+	    && window.postMessage && window.addEventListener
+	    ;
+
+	    if (canSetImmediate) {
+	        return function (f) { return window.setImmediate(f) };
+	    }
+
+	    if (canPost) {
+	        var queue = [];
+	        window.addEventListener('message', function (ev) {
+	            var source = ev.source;
+	            if ((source === window || source === null) && ev.data === 'process-tick') {
+	                ev.stopPropagation();
+	                if (queue.length > 0) {
+	                    var fn = queue.shift();
+	                    fn();
+	                }
+	            }
+	        }, true);
+
+	        return function nextTick(fn) {
+	            queue.push(fn);
+	            window.postMessage('process-tick', '*');
+	        };
+	    }
+
+	    return function nextTick(fn) {
+	        setTimeout(fn, 0);
+	    };
+	})();
+
+	process.title = 'browser';
+	process.browser = true;
+	process.env = {};
+	process.argv = [];
+
+	function noop() {}
+
+	process.on = noop;
+	process.addListener = noop;
+	process.once = noop;
+	process.off = noop;
+	process.removeListener = noop;
+	process.removeAllListeners = noop;
+	process.emit = noop;
+
+	process.binding = function (name) {
+	    throw new Error('process.binding is not supported');
+	}
+
+	// TODO(shtylman)
+	process.cwd = function () { return '/' };
+	process.chdir = function (dir) {
+	    throw new Error('process.chdir is not supported');
+	};
 
 
 /***/ },

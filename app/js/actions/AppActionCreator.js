@@ -18,6 +18,13 @@ var AppActionCreators = {
 		//
     },
 
+    createTodo: function (item) {
+      AppDispatcher.handleViewAction({
+        actionType: AppConstants.TODO_CREATE,
+        item: item
+      });
+    },
+
     selectTodo: function (item) {
       AppDispatcher.handleViewAction({
         actionType: AppConstants.TODO_SELECT,
