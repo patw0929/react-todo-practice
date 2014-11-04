@@ -7,6 +7,10 @@ module.exports = {
     publicPath: "./build",
     filename: "bundle.js"
   },
+  externals: {
+    "jquery": "jQuery",
+    "react": "React"
+  },
   module: {
     loaders: [
       { test: /\.css$/, loader: "style!css" },
