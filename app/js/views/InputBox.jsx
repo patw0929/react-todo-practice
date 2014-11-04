@@ -3,6 +3,8 @@
  */
 
 var actions = require('../actions/AppActionCreator');
+var shortId = require('shortid');
+
 var styles = require('../../assets/sass/views/InputBox.scss');
 
 var InputBox = React.createClass({
@@ -52,15 +54,12 @@ var InputBox = React.createClass({
 
     // retrieve max uid in arrTodos
     var arrTodos = this.props.truth.arrTodos;
-    var maxUid = arrTodos[arrTodos.length - 1].uid + 1;
-
-    console.log(maxUid);
 
     console.log("儲存");
     actions.createTodo({
       name: item.value,
       created: Date.now(),
-      uid: maxUid
+      uid: shortId.generate()
     });
 
     this.setState({
