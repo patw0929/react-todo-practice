@@ -8,6 +8,7 @@
 // import
 
 var Header = React.createFactory( require('./Header.jsx') );
+var InputBox = React.createFactory(require('./InputBox.jsx'));
 var List = React.createFactory( require('./List.jsx') );
 var Footer = React.createFactory( require('./Footer.jsx') );
 
@@ -109,11 +110,10 @@ var MainApp = React.createClass({
         return (
 
             <div className="wrapper">
-                <Header />
-
+              <Header />
+                <InputBox />
                 <List truth={this.state} />
-
-                <Footer />
+              <Footer />
             </div>
         )
     },

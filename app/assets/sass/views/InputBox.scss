@@ -1,0 +1,21 @@
+.inputbox {
+  margin: 10px auto;
+  text-align: center;
+
+  input[type="text"] {
+    width: 90%;
+    font-size: 16px;
+    padding: 10px;
+  }
+
+  button[type="submit"] {
+    width: 5%;
+    min-width: 85px;
+    font-size: 16px;
+    line-height: 42px;
+    border-radius: 5px;
+    border: 0;
+    background-color: #eee;
+    margin-left: 10px;
+  }
+}
