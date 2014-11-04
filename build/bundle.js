@@ -222,8 +222,8 @@
 	 *
 	 */
 
-	var actions = __webpack_require__(9);
-	var styles = __webpack_require__(20);
+	var actions = __webpack_require__(8);
+	var styles = __webpack_require__(14);
 
 	var Header = React.createClass({displayName: 'Header',
 
@@ -255,8 +255,8 @@
 	 *
 	 */
 
-	var actions = __webpack_require__(9);
-	var styles = __webpack_require__(14);
+	var actions = __webpack_require__(8);
+	var styles = __webpack_require__(16);
 
 	var InputBox = React.createClass({displayName: 'InputBox',
 	  getInitialState: function () {
@@ -344,9 +344,9 @@
 	 *
 	 */
 
-	var actions = __webpack_require__(9);
-	var ListItem = React.createFactory(__webpack_require__(8));
-	var styles = __webpack_require__(18);
+	var actions = __webpack_require__(8);
+	var ListItem = React.createFactory(__webpack_require__(10));
+	var styles = __webpack_require__(20);
 
 	var List = React.createClass({displayName: 'List',
 
@@ -386,8 +386,8 @@
 	 *
 	 */
 	var ReactPropTypes = React.PropTypes;
-	var actions = __webpack_require__(9);
-	var styles = __webpack_require__(16);
+	var actions = __webpack_require__(8);
+	var styles = __webpack_require__(18);
 
 	var Footer = React.createClass({displayName: 'Footer',
 
@@ -426,22 +426,35 @@
 	//
 	// IMPORT
 
-	var AppDispatcher = __webpack_require__(10);
+	var AppDispatcher = __webpack_require__(9);
 	var AppConstants = __webpack_require__(7);
-	var actions = __webpack_require__(9);
+	var actions = __webpack_require__(8);
 
-	var objectAssign = __webpack_require__(12);
-	var EventEmitter = __webpack_require__(11).EventEmitter; // 取得一個 pub/sub 廣播器
+	var objectAssign = __webpack_require__(11);
+	var EventEmitter = __webpack_require__(12).EventEmitter; // 取得一個 pub/sub 廣播器
 
-	var arrTodos = [
-	  { name: '吃飯', created: Date.now(), uid: 1 },
-	  { name: '睡覺', created: Date.now(), uid: 2 },
-	  { name: '打東東', created: Date.now(), uid: 3 }
-	];
+	var arrTodos = [];
+	var selectedItem = null;
+
+	var db = window.localStorage;
+	if (db.hasOwnProperty('patwDB') === false) {
+	  db.setItem('patwDB', JSON.stringify({
+	    todos: [],
+	    selectedItem: null
+	  }));
+	}
+
+	var lsDB = JSON.parse(db.getItem('patwDB'));
+	arrTodos = lsDB.todos ? lsDB.todos : [];
+	selectedItem = lsDB.selectedItem ? lsDB.selectedItem : null;
+
+	// var arrTodos = [
+	//   { name: '吃飯', created: Date.now(), uid: 1 },
+	//   { name: '睡覺', created: Date.now(), uid: 2 },
+	//   { name: '打東東', created: Date.now(), uid: 3 }
+	// ];
 
 	var TodoStore = {};
-
-	var selectedItem = null;
 
 	/**
 	 * 建立 TodoStore class，並且繼承 EventEMitter 以擁有廣播功能
@@ -481,6 +494,7 @@
 	      arrTodos.push(action.item);
 	      console.log('TodoStore 新增: ', arrTodos);
 	      TodoStore.emit(AppConstants.CHANGE_EVENT);
+	      saveToLocalStorage();
 	      break;
 
 	    /**
@@ -492,6 +506,7 @@
 	      });
 	      console.log('TodoStore 刪完: ', arrTodos);
 	      TodoStore.emit(AppConstants.CHANGE_EVENT);
+	      saveToLocalStorage();
 	      break;
 
 	    /**
@@ -500,6 +515,7 @@
 	    case AppConstants.TODO_UPDATE:
 	      console.log('TodoStore 更新: ', arrTodos);
 	      TodoStore.emit(AppConstants.CHANGE_EVENT);
+	      saveToLocalStorage();
 	      break;
 
 	    /**
@@ -513,6 +529,7 @@
 	        selectedItem = action.item;
 	        TodoStore.emit(AppConstants.CHANGE_EVENT);
 	      }
+	      saveToLocalStorage();
 	      break;
 
 	    default:
@@ -520,6 +537,13 @@
 	  }
 
 	});
+
+	function saveToLocalStorage() {
+	  db.setItem('patwDB', JSON.stringify({
+	    todos: arrTodos,
+	    selectedItem: selectedItem
+	  }));
+	}
 
 	module.exports = TodoStore;
 
@@ -561,36 +585,7 @@
 	/**
 	 *
 	 */
-
-	var actions = __webpack_require__(9);
-
-	var ListItem = React.createClass({displayName: 'ListItem',
-	  render: function () {
-	    var cx = React.addons.classSet;
-	    var classes = cx({
-	      'selected': this.props.selected
-	    });
-
-	    return (
-	      React.createElement("div", {onClick: this.props.onClick}, 
-	        React.createElement("span", {className: classes}, this.props.item.uid, " ", this.props.item.name, " ", this.props.selected ? "XD" : "QQ")
-	      )
-	    );
-	  }
-
-	});
-
-	module.exports = ListItem;
-
-
-/***/ },
-/* 9 */
-/***/ function(module, exports, __webpack_require__) {
-
-	/**
-	 *
-	 */
-	var AppDispatcher = __webpack_require__(10);
+	var AppDispatcher = __webpack_require__(9);
 	var AppConstants = __webpack_require__(7);
 	var Promise = __webpack_require__(24).Promise;
 
@@ -627,7 +622,7 @@
 
 
 /***/ },
-/* 10 */
+/* 9 */
 /***/ function(module, exports, __webpack_require__) {
 
 	
@@ -687,7 +682,79 @@
 
 
 /***/ },
+/* 10 */
+/***/ function(module, exports, __webpack_require__) {
+
+	/**
+	 *
+	 */
+
+	var actions = __webpack_require__(8);
+
+	var ListItem = React.createClass({displayName: 'ListItem',
+	  render: function () {
+	    var cx = React.addons.classSet;
+	    var classes = cx({
+	      'selected': this.props.selected
+	    });
+
+	    return (
+	      React.createElement("div", {onClick: this.props.onClick}, 
+	        React.createElement("span", {className: classes}, this.props.item.uid, " ", this.props.item.name, " ", this.props.selected ? "XD" : "QQ")
+	      )
+	    );
+	  }
+
+	});
+
+	module.exports = ListItem;
+
+
+/***/ },
 /* 11 */
+/***/ function(module, exports, __webpack_require__) {
+
+	'use strict';
+
+	function ToObject(val) {
+		if (val == null) {
+			throw new TypeError('Object.assign cannot be called with null or undefined');
+		}
+
+		return Object(val);
+	}
+
+	module.exports = Object.assign || function (target, source) {
+		var pendingException;
+		var from;
+		var keys;
+		var to = ToObject(target);
+
+		for (var s = 1; s < arguments.length; s++) {
+			from = arguments[s];
+			keys = Object.keys(Object(from));
+
+			for (var i = 0; i < keys.length; i++) {
+				try {
+					to[keys[i]] = from[keys[i]];
+				} catch (err) {
+					if (pendingException === undefined) {
+						pendingException = err;
+					}
+				}
+			}
+		}
+
+		if (pendingException) {
+			throw pendingException;
+		}
+
+		return to;
+	};
+
+
+/***/ },
+/* 12 */
 /***/ function(module, exports, __webpack_require__) {
 
 	// Copyright Joyent, Inc. and other Node contributors.
@@ -994,49 +1061,6 @@
 
 
 /***/ },
-/* 12 */
-/***/ function(module, exports, __webpack_require__) {
-
-	'use strict';
-
-	function ToObject(val) {
-		if (val == null) {
-			throw new TypeError('Object.assign cannot be called with null or undefined');
-		}
-
-		return Object(val);
-	}
-
-	module.exports = Object.assign || function (target, source) {
-		var pendingException;
-		var from;
-		var keys;
-		var to = ToObject(target);
-
-		for (var s = 1; s < arguments.length; s++) {
-			from = arguments[s];
-			keys = Object.keys(Object(from));
-
-			for (var i = 0; i < keys.length; i++) {
-				try {
-					to[keys[i]] = from[keys[i]];
-				} catch (err) {
-					if (pendingException === undefined) {
-						pendingException = err;
-					}
-				}
-			}
-		}
-
-		if (pendingException) {
-			throw pendingException;
-		}
-
-		return to;
-	};
-
-
-/***/ },
 /* 13 */
 /***/ function(module, exports, __webpack_require__) {
 
@@ -1108,8 +1132,8 @@
 	// Hot Module Replacement
 	if(false) {
 		// When the styles change, update the <style> tags
-		module.hot.accept("!!/Users/gogolook/Projects/react-todo-practice/node_modules/css-loader/index.js!/Users/gogolook/Projects/react-todo-practice/node_modules/sass-loader/index.js!/Users/gogolook/Projects/react-todo-practice/app/assets/sass/views/InputBox.scss", function() {
-			var newContent = require("!!/Users/gogolook/Projects/react-todo-practice/node_modules/css-loader/index.js!/Users/gogolook/Projects/react-todo-practice/node_modules/sass-loader/index.js!/Users/gogolook/Projects/react-todo-practice/app/assets/sass/views/InputBox.scss");
+		module.hot.accept("!!/Users/gogolook/Projects/react-todo-practice/node_modules/css-loader/index.js!/Users/gogolook/Projects/react-todo-practice/node_modules/sass-loader/index.js!/Users/gogolook/Projects/react-todo-practice/app/assets/sass/views/Header.scss", function() {
+			var newContent = require("!!/Users/gogolook/Projects/react-todo-practice/node_modules/css-loader/index.js!/Users/gogolook/Projects/react-todo-practice/node_modules/sass-loader/index.js!/Users/gogolook/Projects/react-todo-practice/app/assets/sass/views/Header.scss");
 			if(typeof newContent === 'string') newContent = [module.id, newContent, ''];
 			update(newContent);
 		});
@@ -1122,7 +1146,7 @@
 /***/ function(module, exports, __webpack_require__) {
 
 	exports = module.exports = __webpack_require__(26)();
-	exports.push([module.id, ".inputbox{margin:10px auto;text-align:center}.inputbox input[type=\"text\"]{width:90%;font-size:16px;padding:10px}.inputbox button[type=\"submit\"]{width:5%;min-width:85px;font-size:16px;line-height:42px;border-radius:5px;border:0;background-color:#eee;margin-left:10px}", ""]);
+	exports.push([module.id, "header.header h1{text-align:center;background-color:#12c46e;line-height:60px}", ""]);
 
 /***/ },
 /* 16 */
@@ -1132,6 +1156,36 @@
 
 	// load the styles
 	var content = __webpack_require__(17);
+	if(typeof content === 'string') content = [[module.id, content, '']];
+	// add the styles to the DOM
+	var update = __webpack_require__(22)(content);
+	// Hot Module Replacement
+	if(false) {
+		// When the styles change, update the <style> tags
+		module.hot.accept("!!/Users/gogolook/Projects/react-todo-practice/node_modules/css-loader/index.js!/Users/gogolook/Projects/react-todo-practice/node_modules/sass-loader/index.js!/Users/gogolook/Projects/react-todo-practice/app/assets/sass/views/InputBox.scss", function() {
+			var newContent = require("!!/Users/gogolook/Projects/react-todo-practice/node_modules/css-loader/index.js!/Users/gogolook/Projects/react-todo-practice/node_modules/sass-loader/index.js!/Users/gogolook/Projects/react-todo-practice/app/assets/sass/views/InputBox.scss");
+			if(typeof newContent === 'string') newContent = [module.id, newContent, ''];
+			update(newContent);
+		});
+		// When the module is disposed, remove the <style> tags
+		module.hot.dispose(function() { update(); });
+	}
+
+/***/ },
+/* 17 */
+/***/ function(module, exports, __webpack_require__) {
+
+	exports = module.exports = __webpack_require__(26)();
+	exports.push([module.id, ".inputbox{margin:10px auto;text-align:center}.inputbox input[type=\"text\"]{width:90%;font-size:16px;padding:10px}.inputbox button[type=\"submit\"]{width:5%;min-width:85px;font-size:16px;line-height:42px;border-radius:5px;border:0;background-color:#eee;margin-left:10px}", ""]);
+
+/***/ },
+/* 18 */
+/***/ function(module, exports, __webpack_require__) {
+
+	// style-loader: Adds some css to the DOM by adding a <style> tag
+
+	// load the styles
+	var content = __webpack_require__(19);
 	if(typeof content === 'string') content = [[module.id, content, '']];
 	// add the styles to the DOM
 	var update = __webpack_require__(22)(content);
@@ -1148,20 +1202,20 @@
 	}
 
 /***/ },
-/* 17 */
+/* 19 */
 /***/ function(module, exports, __webpack_require__) {
 
 	exports = module.exports = __webpack_require__(26)();
 	exports.push([module.id, "footer.footer{position:fixed;bottom:0;background-color:#6b4308;color:#fff;text-align:center;line-height:60px;width:100%}", ""]);
 
 /***/ },
-/* 18 */
+/* 20 */
 /***/ function(module, exports, __webpack_require__) {
 
 	// style-loader: Adds some css to the DOM by adding a <style> tag
 
 	// load the styles
-	var content = __webpack_require__(19);
+	var content = __webpack_require__(21);
 	if(typeof content === 'string') content = [[module.id, content, '']];
 	// add the styles to the DOM
 	var update = __webpack_require__(22)(content);
@@ -1178,41 +1232,11 @@
 	}
 
 /***/ },
-/* 19 */
-/***/ function(module, exports, __webpack_require__) {
-
-	exports = module.exports = __webpack_require__(26)();
-	exports.push([module.id, ".todo-list div>span{display:block;background-color:#eee;padding:10px}.todo-list div>span.selected{background-color:#999}", ""]);
-
-/***/ },
-/* 20 */
-/***/ function(module, exports, __webpack_require__) {
-
-	// style-loader: Adds some css to the DOM by adding a <style> tag
-
-	// load the styles
-	var content = __webpack_require__(21);
-	if(typeof content === 'string') content = [[module.id, content, '']];
-	// add the styles to the DOM
-	var update = __webpack_require__(22)(content);
-	// Hot Module Replacement
-	if(false) {
-		// When the styles change, update the <style> tags
-		module.hot.accept("!!/Users/gogolook/Projects/react-todo-practice/node_modules/css-loader/index.js!/Users/gogolook/Projects/react-todo-practice/node_modules/sass-loader/index.js!/Users/gogolook/Projects/react-todo-practice/app/assets/sass/views/Header.scss", function() {
-			var newContent = require("!!/Users/gogolook/Projects/react-todo-practice/node_modules/css-loader/index.js!/Users/gogolook/Projects/react-todo-practice/node_modules/sass-loader/index.js!/Users/gogolook/Projects/react-todo-practice/app/assets/sass/views/Header.scss");
-			if(typeof newContent === 'string') newContent = [module.id, newContent, ''];
-			update(newContent);
-		});
-		// When the module is disposed, remove the <style> tags
-		module.hot.dispose(function() { update(); });
-	}
-
-/***/ },
 /* 21 */
 /***/ function(module, exports, __webpack_require__) {
 
 	exports = module.exports = __webpack_require__(26)();
-	exports.push([module.id, "header.header h1{text-align:center;background-color:#12c46e;line-height:60px}", ""]);
+	exports.push([module.id, ".todo-list div>span{display:block;background-color:#eee;padding:10px}.todo-list div>span.selected{background-color:#999}", ""]);
 
 /***/ },
 /* 22 */
@@ -2314,7 +2338,7 @@
 	    };
 
 	    /* global define:true module:true window: true */
-	    if ("function" === 'function' && __webpack_require__(29)['amd']) {
+	    if ("function" === 'function' && __webpack_require__(30)['amd']) {
 	      !(__WEBPACK_AMD_DEFINE_RESULT__ = function() { return es6$promise$umd$$ES6Promise; }.call(exports, __webpack_require__, exports, module), __WEBPACK_AMD_DEFINE_RESULT__ !== undefined && (module.exports = __WEBPACK_AMD_DEFINE_RESULT__));
 	    } else if (typeof module !== 'undefined' && module['exports']) {
 	      module['exports'] = es6$promise$umd$$ES6Promise;
@@ -2322,7 +2346,7 @@
 	      this['ES6Promise'] = es6$promise$umd$$ES6Promise;
 	    }
 	}).call(this);
-	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(28), (function() { return this; }()), __webpack_require__(30)(module)))
+	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(28), (function() { return this; }()), __webpack_require__(31)(module)))
 
 /***/ },
 /* 25 */
@@ -2423,7 +2447,7 @@
 
 	"use strict";
 
-	var invariant = __webpack_require__(31);
+	var invariant = __webpack_require__(29);
 
 	var _lastID = 1;
 	var _prefix = 'ID_';
@@ -2734,29 +2758,6 @@
 /* 29 */
 /***/ function(module, exports, __webpack_require__) {
 
-	module.exports = function() { throw new Error("define cannot be used indirect"); };
-
-
-/***/ },
-/* 30 */
-/***/ function(module, exports, __webpack_require__) {
-
-	module.exports = function(module) {
-		if(!module.webpackPolyfill) {
-			module.deprecate = function() {};
-			module.paths = [];
-			// module.parent = undefined by default
-			module.children = [];
-			module.webpackPolyfill = 1;
-		}
-		return module;
-	}
-
-
-/***/ },
-/* 31 */
-/***/ function(module, exports, __webpack_require__) {
-
 	/**
 	 * Copyright (c) 2014, Facebook, Inc.
 	 * All rights reserved.
@@ -2810,6 +2811,29 @@
 	};
 
 	module.exports = invariant;
+
+
+/***/ },
+/* 30 */
+/***/ function(module, exports, __webpack_require__) {
+
+	module.exports = function() { throw new Error("define cannot be used indirect"); };
+
+
+/***/ },
+/* 31 */
+/***/ function(module, exports, __webpack_require__) {
+
+	module.exports = function(module) {
+		if(!module.webpackPolyfill) {
+			module.deprecate = function() {};
+			module.paths = [];
+			// module.parent = undefined by default
+			module.children = [];
+			module.webpackPolyfill = 1;
+		}
+		return module;
+	}
 
 
 /***/ }

@@ -13,15 +13,28 @@ var actions = require('../actions/AppActionCreator');
 var objectAssign = require('object-assign');
 var EventEmitter = require('events').EventEmitter; // 取得一個 pub/sub 廣播器
 
-var arrTodos = [
-  { name: '吃飯', created: Date.now(), uid: 1 },
-  { name: '睡覺', created: Date.now(), uid: 2 },
-  { name: '打東東', created: Date.now(), uid: 3 }
-];
+var arrTodos = [];
+var selectedItem = null;
+
+var db = window.localStorage;
+if (db.hasOwnProperty('patwDB') === false) {
+  db.setItem('patwDB', JSON.stringify({
+    todos: [],
+    selectedItem: null
+  }));
+}
+
+var lsDB = JSON.parse(db.getItem('patwDB'));
+arrTodos = lsDB.todos ? lsDB.todos : [];
+selectedItem = lsDB.selectedItem ? lsDB.selectedItem : null;
+
+// var arrTodos = [
+//   { name: '吃飯', created: Date.now(), uid: 1 },
+//   { name: '睡覺', created: Date.now(), uid: 2 },
+//   { name: '打東東', created: Date.now(), uid: 3 }
+// ];
 
 var TodoStore = {};
-
-var selectedItem = null;
 
 /**
  * 建立 TodoStore class，並且繼承 EventEMitter 以擁有廣播功能
@@ -61,6 +74,7 @@ TodoStore.dispatchToken = AppDispatcher.register( function eventHandlers(evt){
       arrTodos.push(action.item);
       console.log('TodoStore 新增: ', arrTodos);
       TodoStore.emit(AppConstants.CHANGE_EVENT);
+      saveToLocalStorage();
       break;
 
     /**
@@ -72,6 +86,7 @@ TodoStore.dispatchToken = AppDispatcher.register( function eventHandlers(evt){
       });
       console.log('TodoStore 刪完: ', arrTodos);
       TodoStore.emit(AppConstants.CHANGE_EVENT);
+      saveToLocalStorage();
       break;
 
     /**
@@ -80,6 +95,7 @@ TodoStore.dispatchToken = AppDispatcher.register( function eventHandlers(evt){
     case AppConstants.TODO_UPDATE:
       console.log('TodoStore 更新: ', arrTodos);
       TodoStore.emit(AppConstants.CHANGE_EVENT);
+      saveToLocalStorage();
       break;
 
     /**
@@ -93,6 +109,7 @@ TodoStore.dispatchToken = AppDispatcher.register( function eventHandlers(evt){
         selectedItem = action.item;
         TodoStore.emit(AppConstants.CHANGE_EVENT);
       }
+      saveToLocalStorage();
       break;
 
     default:
@@ -100,5 +117,12 @@ TodoStore.dispatchToken = AppDispatcher.register( function eventHandlers(evt){
   }
 
 });
+
+function saveToLocalStorage() {
+  db.setItem('patwDB', JSON.stringify({
+    todos: arrTodos,
+    selectedItem: selectedItem
+  }));
+}
 
 module.exports = TodoStore;
