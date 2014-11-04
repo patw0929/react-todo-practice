@@ -54,6 +54,7 @@ var MainApp = React.createClass({
      * 主程式進入點
      */
     componentWillMount: function () {
+      TodoStore.addListener(AppConstants.CHANGE_EVENT, this._onChange);
     },
 
     // 重要：root view 建立後第一件事，就是偵聽 store 的 change 事件
@@ -123,9 +124,17 @@ var MainApp = React.createClass({
     //
     // private methods - 處理元件內部的事件
 
+    _onChange: function () {
+      console.log('_onChange 重繪: ', this._getState());
+
+      // 重要：從 root view 觸發所有 sub-view 重繪
+      this.setState(this._getState());
+    },
+
     _getState: function () {
       return {
-        arrTodos: TodoStore.getTodos()
+        arrTodos: TodoStore.getTodos(),
+        selectedItem: TodoStore.getSelectedItem()
       }
     }
 

@@ -125,6 +125,7 @@
 	     * 主程式進入點
 	     */
 	    componentWillMount: function () {
+	      TodoStore.addListener(AppConstants.CHANGE_EVENT, this._onChange);
 	    },
 
 	    // 重要：root view 建立後第一件事，就是偵聽 store 的 change 事件
@@ -194,9 +195,17 @@
 	    //
 	    // private methods - 處理元件內部的事件
 
+	    _onChange: function () {
+	      console.log('_onChange 重繪: ', this._getState());
+
+	      // 重要：從 root view 觸發所有 sub-view 重繪
+	      this.setState(this._getState());
+	    },
+
 	    _getState: function () {
 	      return {
-	        arrTodos: TodoStore.getTodos()
+	        arrTodos: TodoStore.getTodos(),
+	        selectedItem: TodoStore.getSelectedItem()
 	      }
 	    }
 
@@ -255,7 +264,11 @@
 	    var arrTodos = this.props.truth.arrTodos;
 
 	    var arr = arrTodos.map(function (item) {
-	      return React.createElement(ListItem, {key: item.uid, item: item, onClick: this.handleClick.bind(this, item)})
+	      return React.createElement(ListItem, {key: item.uid, 
+	                       item: item, 
+	                       selected: this.props.truth.selectedItem == item, 
+
+	                       onClick: this.handleClick.bind(this, item)})
 	    }, this);
 
 	    return (
@@ -267,6 +280,7 @@
 
 	  handleClick: function (item) {
 	    console.log('我被點了', item.name);
+	    actions.selectTodo(item);
 	  }
 
 	});
@@ -326,8 +340,8 @@
 	var AppConstants = __webpack_require__(6);
 	var actions = __webpack_require__(8);
 
-	var objectAssign = __webpack_require__(11);
-	var EventEmitter = __webpack_require__(10).EventEmitter; // 取得一個 pub/sub 廣播器
+	var objectAssign = __webpack_require__(10);
+	var EventEmitter = __webpack_require__(11).EventEmitter; // 取得一個 pub/sub 廣播器
 
 	var arrTodos = [
 	  { name: '吃飯', created: Date.now(), uid: 1 },
@@ -465,7 +479,7 @@
 	  render: function () {
 	    return (
 	      React.createElement("div", {onClick: this.props.onClick}, 
-	        React.createElement("span", null, this.props.item.uid, " ", this.props.item.name)
+	        React.createElement("span", null, this.props.item.uid, " ", this.props.item.name, " ", this.props.selected ? "XD" : "QQ")
 	      )
 	    );
 	  }
@@ -498,6 +512,13 @@
 	    load: function(){
 			//
 	    },
+
+	    selectTodo: function (item) {
+	      AppDispatcher.handleViewAction({
+	        actionType: AppConstants.TODO_SELECT,
+	        item: item
+	      });
+	    }
 
 	};
 
@@ -566,6 +587,49 @@
 
 /***/ },
 /* 10 */
+/***/ function(module, exports, __webpack_require__) {
+
+	'use strict';
+
+	function ToObject(val) {
+		if (val == null) {
+			throw new TypeError('Object.assign cannot be called with null or undefined');
+		}
+
+		return Object(val);
+	}
+
+	module.exports = Object.assign || function (target, source) {
+		var pendingException;
+		var from;
+		var keys;
+		var to = ToObject(target);
+
+		for (var s = 1; s < arguments.length; s++) {
+			from = arguments[s];
+			keys = Object.keys(Object(from));
+
+			for (var i = 0; i < keys.length; i++) {
+				try {
+					to[keys[i]] = from[keys[i]];
+				} catch (err) {
+					if (pendingException === undefined) {
+						pendingException = err;
+					}
+				}
+			}
+		}
+
+		if (pendingException) {
+			throw pendingException;
+		}
+
+		return to;
+	};
+
+
+/***/ },
+/* 11 */
 /***/ function(module, exports, __webpack_require__) {
 
 	// Copyright Joyent, Inc. and other Node contributors.
@@ -872,49 +936,6 @@
 
 
 /***/ },
-/* 11 */
-/***/ function(module, exports, __webpack_require__) {
-
-	'use strict';
-
-	function ToObject(val) {
-		if (val == null) {
-			throw new TypeError('Object.assign cannot be called with null or undefined');
-		}
-
-		return Object(val);
-	}
-
-	module.exports = Object.assign || function (target, source) {
-		var pendingException;
-		var from;
-		var keys;
-		var to = ToObject(target);
-
-		for (var s = 1; s < arguments.length; s++) {
-			from = arguments[s];
-			keys = Object.keys(Object(from));
-
-			for (var i = 0; i < keys.length; i++) {
-				try {
-					to[keys[i]] = from[keys[i]];
-				} catch (err) {
-					if (pendingException === undefined) {
-						pendingException = err;
-					}
-				}
-			}
-		}
-
-		if (pendingException) {
-			throw pendingException;
-		}
-
-		return to;
-	};
-
-
-/***/ },
 /* 12 */
 /***/ function(module, exports, __webpack_require__) {
 
@@ -970,7 +991,7 @@
 
 	module.exports = keyMirror;
 	
-	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(23)))
+	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(21)))
 
 /***/ },
 /* 13 */
@@ -999,7 +1020,7 @@
 /* 14 */
 /***/ function(module, exports, __webpack_require__) {
 
-	exports = module.exports = __webpack_require__(21)();
+	exports = module.exports = __webpack_require__(22)();
 	exports.push([module.id, "header.header h1{text-align:center;background-color:#12c46e;line-height:60px}", ""]);
 
 /***/ },
@@ -1029,7 +1050,7 @@
 /* 16 */
 /***/ function(module, exports, __webpack_require__) {
 
-	exports = module.exports = __webpack_require__(21)();
+	exports = module.exports = __webpack_require__(22)();
 	exports.push([module.id, "footer.footer{position:fixed;bottom:0;background-color:#6b4308;color:#fff;text-align:center;line-height:60px;width:100%}", ""]);
 
 /***/ },
@@ -1167,7 +1188,7 @@
 	 * of patent rights can be found in the PATENTS file in the same directory.
 	 */
 
-	module.exports.Dispatcher = __webpack_require__(22)
+	module.exports.Dispatcher = __webpack_require__(23)
 
 
 /***/ },
@@ -2132,7 +2153,7 @@
 	    };
 
 	    /* global define:true module:true window: true */
-	    if ("function" === 'function' && __webpack_require__(25)['amd']) {
+	    if ("function" === 'function' && __webpack_require__(24)['amd']) {
 	      !(__WEBPACK_AMD_DEFINE_RESULT__ = function() { return es6$promise$umd$$ES6Promise; }.call(exports, __webpack_require__, exports, module), __WEBPACK_AMD_DEFINE_RESULT__ !== undefined && (module.exports = __WEBPACK_AMD_DEFINE_RESULT__));
 	    } else if (typeof module !== 'undefined' && module['exports']) {
 	      module['exports'] = es6$promise$umd$$ES6Promise;
@@ -2140,7 +2161,7 @@
 	      this['ES6Promise'] = es6$promise$umd$$ES6Promise;
 	    }
 	}).call(this);
-	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(23), (function() { return this; }()), __webpack_require__(26)(module)))
+	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(21), (function() { return this; }()), __webpack_require__(25)(module)))
 
 /***/ },
 /* 20 */
@@ -2200,10 +2221,79 @@
 
 	module.exports = invariant;
 	
-	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(23)))
+	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(21)))
 
 /***/ },
 /* 21 */
+/***/ function(module, exports, __webpack_require__) {
+
+	// shim for using process in browser
+
+	var process = module.exports = {};
+
+	process.nextTick = (function () {
+	    var canSetImmediate = typeof window !== 'undefined'
+	    && window.setImmediate;
+	    var canPost = typeof window !== 'undefined'
+	    && window.postMessage && window.addEventListener
+	    ;
+
+	    if (canSetImmediate) {
+	        return function (f) { return window.setImmediate(f) };
+	    }
+
+	    if (canPost) {
+	        var queue = [];
+	        window.addEventListener('message', function (ev) {
+	            var source = ev.source;
+	            if ((source === window || source === null) && ev.data === 'process-tick') {
+	                ev.stopPropagation();
+	                if (queue.length > 0) {
+	                    var fn = queue.shift();
+	                    fn();
+	                }
+	            }
+	        }, true);
+
+	        return function nextTick(fn) {
+	            queue.push(fn);
+	            window.postMessage('process-tick', '*');
+	        };
+	    }
+
+	    return function nextTick(fn) {
+	        setTimeout(fn, 0);
+	    };
+	})();
+
+	process.title = 'browser';
+	process.browser = true;
+	process.env = {};
+	process.argv = [];
+
+	function noop() {}
+
+	process.on = noop;
+	process.addListener = noop;
+	process.once = noop;
+	process.off = noop;
+	process.removeListener = noop;
+	process.removeAllListeners = noop;
+	process.emit = noop;
+
+	process.binding = function (name) {
+	    throw new Error('process.binding is not supported');
+	}
+
+	// TODO(shtylman)
+	process.cwd = function () { return '/' };
+	process.chdir = function (dir) {
+	    throw new Error('process.chdir is not supported');
+	};
+
+
+/***/ },
+/* 22 */
 /***/ function(module, exports, __webpack_require__) {
 
 	module.exports = function() {
@@ -2224,7 +2314,7 @@
 	}
 
 /***/ },
-/* 22 */
+/* 23 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/*
@@ -2241,7 +2331,7 @@
 
 	"use strict";
 
-	var invariant = __webpack_require__(24);
+	var invariant = __webpack_require__(26);
 
 	var _lastID = 1;
 	var _prefix = 'ID_';
@@ -2480,76 +2570,30 @@
 
 
 /***/ },
-/* 23 */
+/* 24 */
 /***/ function(module, exports, __webpack_require__) {
 
-	// shim for using process in browser
-
-	var process = module.exports = {};
-
-	process.nextTick = (function () {
-	    var canSetImmediate = typeof window !== 'undefined'
-	    && window.setImmediate;
-	    var canPost = typeof window !== 'undefined'
-	    && window.postMessage && window.addEventListener
-	    ;
-
-	    if (canSetImmediate) {
-	        return function (f) { return window.setImmediate(f) };
-	    }
-
-	    if (canPost) {
-	        var queue = [];
-	        window.addEventListener('message', function (ev) {
-	            var source = ev.source;
-	            if ((source === window || source === null) && ev.data === 'process-tick') {
-	                ev.stopPropagation();
-	                if (queue.length > 0) {
-	                    var fn = queue.shift();
-	                    fn();
-	                }
-	            }
-	        }, true);
-
-	        return function nextTick(fn) {
-	            queue.push(fn);
-	            window.postMessage('process-tick', '*');
-	        };
-	    }
-
-	    return function nextTick(fn) {
-	        setTimeout(fn, 0);
-	    };
-	})();
-
-	process.title = 'browser';
-	process.browser = true;
-	process.env = {};
-	process.argv = [];
-
-	function noop() {}
-
-	process.on = noop;
-	process.addListener = noop;
-	process.once = noop;
-	process.off = noop;
-	process.removeListener = noop;
-	process.removeAllListeners = noop;
-	process.emit = noop;
-
-	process.binding = function (name) {
-	    throw new Error('process.binding is not supported');
-	}
-
-	// TODO(shtylman)
-	process.cwd = function () { return '/' };
-	process.chdir = function (dir) {
-	    throw new Error('process.chdir is not supported');
-	};
+	module.exports = function() { throw new Error("define cannot be used indirect"); };
 
 
 /***/ },
-/* 24 */
+/* 25 */
+/***/ function(module, exports, __webpack_require__) {
+
+	module.exports = function(module) {
+		if(!module.webpackPolyfill) {
+			module.deprecate = function() {};
+			module.paths = [];
+			// module.parent = undefined by default
+			module.children = [];
+			module.webpackPolyfill = 1;
+		}
+		return module;
+	}
+
+
+/***/ },
+/* 26 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/**
@@ -2605,29 +2649,6 @@
 	};
 
 	module.exports = invariant;
-
-
-/***/ },
-/* 25 */
-/***/ function(module, exports, __webpack_require__) {
-
-	module.exports = function() { throw new Error("define cannot be used indirect"); };
-
-
-/***/ },
-/* 26 */
-/***/ function(module, exports, __webpack_require__) {
-
-	module.exports = function(module) {
-		if(!module.webpackPolyfill) {
-			module.deprecate = function() {};
-			module.paths = [];
-			// module.parent = undefined by default
-			module.children = [];
-			module.webpackPolyfill = 1;
-		}
-		return module;
-	}
 
 
 /***/ }

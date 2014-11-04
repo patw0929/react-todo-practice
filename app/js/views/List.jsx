@@ -11,7 +11,11 @@ var List = React.createClass({
     var arrTodos = this.props.truth.arrTodos;
 
     var arr = arrTodos.map(function (item) {
-      return <ListItem key={item.uid} item={item} onClick={this.handleClick.bind(this, item)} />
+      return <ListItem key={item.uid}
+                       item={item}
+                       selected={this.props.truth.selectedItem == item}
+
+                       onClick={this.handleClick.bind(this, item)} />
     }, this);
 
     return (
@@ -23,6 +27,7 @@ var List = React.createClass({
 
   handleClick: function (item) {
     console.log('我被點了', item.name);
+    actions.selectTodo(item);
   }
 
 });
