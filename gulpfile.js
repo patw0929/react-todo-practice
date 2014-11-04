@@ -36,7 +36,7 @@ gulp.task('bundle-css', function () {
         this.end();
         gulp.src('').pipe(notify('✖ CSS Bundle Failed ✖'));
     })
-    .pipe(gulp.dest('static/assets/business/css'));
+    .pipe(gulp.dest('./build/assets/css'));
 });
 
 gulp.task('bundle-js', function () {
