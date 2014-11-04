@@ -4,6 +4,7 @@
 
 var actions = require('../actions/AppActionCreator');
 var ListItem = React.createFactory(require('./ListItem.jsx'));
+var styles = require('../../assets/sass/views/List.scss');
 
 var List = React.createClass({
 

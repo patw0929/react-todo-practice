@@ -222,7 +222,7 @@
 	 *
 	 */
 
-	var actions = __webpack_require__(8);
+	var actions = __webpack_require__(7);
 	var styles = __webpack_require__(13);
 
 	var Header = React.createClass({displayName: 'Header',
@@ -255,8 +255,9 @@
 	 *
 	 */
 
-	var actions = __webpack_require__(8);
-	var ListItem = React.createFactory(__webpack_require__(7));
+	var actions = __webpack_require__(7);
+	var ListItem = React.createFactory(__webpack_require__(8));
+	var styles = __webpack_require__(17);
 
 	var List = React.createClass({displayName: 'List',
 
@@ -296,7 +297,7 @@
 	 *
 	 */
 	var ReactPropTypes = React.PropTypes;
-	var actions = __webpack_require__(8);
+	var actions = __webpack_require__(7);
 	var styles = __webpack_require__(15);
 
 	var Footer = React.createClass({displayName: 'Footer',
@@ -338,10 +339,10 @@
 
 	var AppDispatcher = __webpack_require__(9);
 	var AppConstants = __webpack_require__(6);
-	var actions = __webpack_require__(8);
+	var actions = __webpack_require__(7);
 
-	var objectAssign = __webpack_require__(10);
-	var EventEmitter = __webpack_require__(11).EventEmitter; // 取得一個 pub/sub 廣播器
+	var objectAssign = __webpack_require__(11);
+	var EventEmitter = __webpack_require__(10).EventEmitter; // 取得一個 pub/sub 廣播器
 
 	var arrTodos = [
 	  { name: '吃飯', created: Date.now(), uid: 1 },
@@ -471,34 +472,9 @@
 	/**
 	 *
 	 */
-
-	var actions = __webpack_require__(8);
-
-	var ListItem = React.createClass({displayName: 'ListItem',
-
-	  render: function () {
-	    return (
-	      React.createElement("div", {onClick: this.props.onClick}, 
-	        React.createElement("span", null, this.props.item.uid, " ", this.props.item.name, " ", this.props.selected ? "XD" : "QQ")
-	      )
-	    );
-	  }
-
-	});
-
-	module.exports = ListItem;
-
-
-/***/ },
-/* 8 */
-/***/ function(module, exports, __webpack_require__) {
-
-	/**
-	 *
-	 */
 	var AppDispatcher = __webpack_require__(9);
 	var AppConstants = __webpack_require__(6);
-	var Promise = __webpack_require__(19).Promise;
+	var Promise = __webpack_require__(22).Promise;
 
 	// 就是個單純的 hash table
 	// 因此下面所有指令皆可視為 Action static method
@@ -526,13 +502,42 @@
 
 
 /***/ },
+/* 8 */
+/***/ function(module, exports, __webpack_require__) {
+
+	/**
+	 *
+	 */
+
+	var actions = __webpack_require__(7);
+
+	var ListItem = React.createClass({displayName: 'ListItem',
+	  render: function () {
+	    var cx = React.addons.classSet;
+	    var classes = cx({
+	      'selected': this.props.selected
+	    });
+
+	    return (
+	      React.createElement("div", {onClick: this.props.onClick}, 
+	        React.createElement("span", {className: classes}, this.props.item.uid, " ", this.props.item.name, " ", this.props.selected ? "XD" : "QQ")
+	      )
+	    );
+	  }
+
+	});
+
+	module.exports = ListItem;
+
+
+/***/ },
 /* 9 */
 /***/ function(module, exports, __webpack_require__) {
 
 	
 	var AppConstants = __webpack_require__(6);
 
-	var Dispatcher = __webpack_require__(18).Dispatcher;
+	var Dispatcher = __webpack_require__(20).Dispatcher;
 
 
 	/**
@@ -587,49 +592,6 @@
 
 /***/ },
 /* 10 */
-/***/ function(module, exports, __webpack_require__) {
-
-	'use strict';
-
-	function ToObject(val) {
-		if (val == null) {
-			throw new TypeError('Object.assign cannot be called with null or undefined');
-		}
-
-		return Object(val);
-	}
-
-	module.exports = Object.assign || function (target, source) {
-		var pendingException;
-		var from;
-		var keys;
-		var to = ToObject(target);
-
-		for (var s = 1; s < arguments.length; s++) {
-			from = arguments[s];
-			keys = Object.keys(Object(from));
-
-			for (var i = 0; i < keys.length; i++) {
-				try {
-					to[keys[i]] = from[keys[i]];
-				} catch (err) {
-					if (pendingException === undefined) {
-						pendingException = err;
-					}
-				}
-			}
-		}
-
-		if (pendingException) {
-			throw pendingException;
-		}
-
-		return to;
-	};
-
-
-/***/ },
-/* 11 */
 /***/ function(module, exports, __webpack_require__) {
 
 	// Copyright Joyent, Inc. and other Node contributors.
@@ -936,6 +898,49 @@
 
 
 /***/ },
+/* 11 */
+/***/ function(module, exports, __webpack_require__) {
+
+	'use strict';
+
+	function ToObject(val) {
+		if (val == null) {
+			throw new TypeError('Object.assign cannot be called with null or undefined');
+		}
+
+		return Object(val);
+	}
+
+	module.exports = Object.assign || function (target, source) {
+		var pendingException;
+		var from;
+		var keys;
+		var to = ToObject(target);
+
+		for (var s = 1; s < arguments.length; s++) {
+			from = arguments[s];
+			keys = Object.keys(Object(from));
+
+			for (var i = 0; i < keys.length; i++) {
+				try {
+					to[keys[i]] = from[keys[i]];
+				} catch (err) {
+					if (pendingException === undefined) {
+						pendingException = err;
+					}
+				}
+			}
+		}
+
+		if (pendingException) {
+			throw pendingException;
+		}
+
+		return to;
+	};
+
+
+/***/ },
 /* 12 */
 /***/ function(module, exports, __webpack_require__) {
 
@@ -953,7 +958,7 @@
 
 	"use strict";
 
-	var invariant = __webpack_require__(20);
+	var invariant = __webpack_require__(21);
 
 	/**
 	 * Constructs an enumeration with keys equal to their value.
@@ -991,7 +996,7 @@
 
 	module.exports = keyMirror;
 	
-	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(21)))
+	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(24)))
 
 /***/ },
 /* 13 */
@@ -1003,7 +1008,7 @@
 	var content = __webpack_require__(14);
 	if(typeof content === 'string') content = [[module.id, content, '']];
 	// add the styles to the DOM
-	var update = __webpack_require__(17)(content);
+	var update = __webpack_require__(19)(content);
 	// Hot Module Replacement
 	if(false) {
 		// When the styles change, update the <style> tags
@@ -1020,7 +1025,7 @@
 /* 14 */
 /***/ function(module, exports, __webpack_require__) {
 
-	exports = module.exports = __webpack_require__(22)();
+	exports = module.exports = __webpack_require__(23)();
 	exports.push([module.id, "header.header h1{text-align:center;background-color:#12c46e;line-height:60px}", ""]);
 
 /***/ },
@@ -1033,7 +1038,7 @@
 	var content = __webpack_require__(16);
 	if(typeof content === 'string') content = [[module.id, content, '']];
 	// add the styles to the DOM
-	var update = __webpack_require__(17)(content);
+	var update = __webpack_require__(19)(content);
 	// Hot Module Replacement
 	if(false) {
 		// When the styles change, update the <style> tags
@@ -1050,11 +1055,41 @@
 /* 16 */
 /***/ function(module, exports, __webpack_require__) {
 
-	exports = module.exports = __webpack_require__(22)();
+	exports = module.exports = __webpack_require__(23)();
 	exports.push([module.id, "footer.footer{position:fixed;bottom:0;background-color:#6b4308;color:#fff;text-align:center;line-height:60px;width:100%}", ""]);
 
 /***/ },
 /* 17 */
+/***/ function(module, exports, __webpack_require__) {
+
+	// style-loader: Adds some css to the DOM by adding a <style> tag
+
+	// load the styles
+	var content = __webpack_require__(18);
+	if(typeof content === 'string') content = [[module.id, content, '']];
+	// add the styles to the DOM
+	var update = __webpack_require__(19)(content);
+	// Hot Module Replacement
+	if(false) {
+		// When the styles change, update the <style> tags
+		module.hot.accept("!!/Users/gogolook/Projects/react-todo-practice/node_modules/css-loader/index.js!/Users/gogolook/Projects/react-todo-practice/node_modules/sass-loader/index.js!/Users/gogolook/Projects/react-todo-practice/app/assets/sass/views/List.scss", function() {
+			var newContent = require("!!/Users/gogolook/Projects/react-todo-practice/node_modules/css-loader/index.js!/Users/gogolook/Projects/react-todo-practice/node_modules/sass-loader/index.js!/Users/gogolook/Projects/react-todo-practice/app/assets/sass/views/List.scss");
+			if(typeof newContent === 'string') newContent = [module.id, newContent, ''];
+			update(newContent);
+		});
+		// When the module is disposed, remove the <style> tags
+		module.hot.dispose(function() { update(); });
+	}
+
+/***/ },
+/* 18 */
+/***/ function(module, exports, __webpack_require__) {
+
+	exports = module.exports = __webpack_require__(23)();
+	exports.push([module.id, ".todo-list div>span{display:block;background-color:#eee;padding:10px}.todo-list div>span.selected{background-color:#999}", ""]);
+
+/***/ },
+/* 19 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/*
@@ -1176,7 +1211,7 @@
 
 
 /***/ },
-/* 18 */
+/* 20 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/**
@@ -1188,11 +1223,71 @@
 	 * of patent rights can be found in the PATENTS file in the same directory.
 	 */
 
-	module.exports.Dispatcher = __webpack_require__(23)
+	module.exports.Dispatcher = __webpack_require__(25)
 
 
 /***/ },
-/* 19 */
+/* 21 */
+/***/ function(module, exports, __webpack_require__) {
+
+	/* WEBPACK VAR INJECTION */(function(process) {/**
+	 * Copyright 2013-2014, Facebook, Inc.
+	 * All rights reserved.
+	 *
+	 * This source code is licensed under the BSD-style license found in the
+	 * LICENSE file in the root directory of this source tree. An additional grant
+	 * of patent rights can be found in the PATENTS file in the same directory.
+	 *
+	 * @providesModule invariant
+	 */
+
+	"use strict";
+
+	/**
+	 * Use invariant() to assert state which your program assumes to be true.
+	 *
+	 * Provide sprintf-style format (only %s is supported) and arguments
+	 * to provide information about what broke and what you were
+	 * expecting.
+	 *
+	 * The invariant message will be stripped in production, but the invariant
+	 * will remain to ensure logic does not differ in production.
+	 */
+
+	var invariant = function(condition, format, a, b, c, d, e, f) {
+	  if ("production" !== process.env.NODE_ENV) {
+	    if (format === undefined) {
+	      throw new Error('invariant requires an error message argument');
+	    }
+	  }
+
+	  if (!condition) {
+	    var error;
+	    if (format === undefined) {
+	      error = new Error(
+	        'Minified exception occurred; use the non-minified dev environment ' +
+	        'for the full error message and additional helpful warnings.'
+	      );
+	    } else {
+	      var args = [a, b, c, d, e, f];
+	      var argIndex = 0;
+	      error = new Error(
+	        'Invariant Violation: ' +
+	        format.replace(/%s/g, function() { return args[argIndex++]; })
+	      );
+	    }
+
+	    error.framesToPop = 1; // we don't care about invariant's own frame
+	    throw error;
+	  }
+	};
+
+	module.exports = invariant;
+	
+	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(24)))
+
+/***/ },
+/* 22 */
 /***/ function(module, exports, __webpack_require__) {
 
 	var __WEBPACK_AMD_DEFINE_RESULT__;/* WEBPACK VAR INJECTION */(function(process, global, module) {/*!
@@ -2153,7 +2248,7 @@
 	    };
 
 	    /* global define:true module:true window: true */
-	    if ("function" === 'function' && __webpack_require__(24)['amd']) {
+	    if ("function" === 'function' && __webpack_require__(26)['amd']) {
 	      !(__WEBPACK_AMD_DEFINE_RESULT__ = function() { return es6$promise$umd$$ES6Promise; }.call(exports, __webpack_require__, exports, module), __WEBPACK_AMD_DEFINE_RESULT__ !== undefined && (module.exports = __WEBPACK_AMD_DEFINE_RESULT__));
 	    } else if (typeof module !== 'undefined' && module['exports']) {
 	      module['exports'] = es6$promise$umd$$ES6Promise;
@@ -2161,70 +2256,31 @@
 	      this['ES6Promise'] = es6$promise$umd$$ES6Promise;
 	    }
 	}).call(this);
-	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(21), (function() { return this; }()), __webpack_require__(25)(module)))
+	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(24), (function() { return this; }()), __webpack_require__(27)(module)))
 
 /***/ },
-/* 20 */
+/* 23 */
 /***/ function(module, exports, __webpack_require__) {
 
-	/* WEBPACK VAR INJECTION */(function(process) {/**
-	 * Copyright 2013-2014, Facebook, Inc.
-	 * All rights reserved.
-	 *
-	 * This source code is licensed under the BSD-style license found in the
-	 * LICENSE file in the root directory of this source tree. An additional grant
-	 * of patent rights can be found in the PATENTS file in the same directory.
-	 *
-	 * @providesModule invariant
-	 */
-
-	"use strict";
-
-	/**
-	 * Use invariant() to assert state which your program assumes to be true.
-	 *
-	 * Provide sprintf-style format (only %s is supported) and arguments
-	 * to provide information about what broke and what you were
-	 * expecting.
-	 *
-	 * The invariant message will be stripped in production, but the invariant
-	 * will remain to ensure logic does not differ in production.
-	 */
-
-	var invariant = function(condition, format, a, b, c, d, e, f) {
-	  if ("production" !== process.env.NODE_ENV) {
-	    if (format === undefined) {
-	      throw new Error('invariant requires an error message argument');
-	    }
-	  }
-
-	  if (!condition) {
-	    var error;
-	    if (format === undefined) {
-	      error = new Error(
-	        'Minified exception occurred; use the non-minified dev environment ' +
-	        'for the full error message and additional helpful warnings.'
-	      );
-	    } else {
-	      var args = [a, b, c, d, e, f];
-	      var argIndex = 0;
-	      error = new Error(
-	        'Invariant Violation: ' +
-	        format.replace(/%s/g, function() { return args[argIndex++]; })
-	      );
-	    }
-
-	    error.framesToPop = 1; // we don't care about invariant's own frame
-	    throw error;
-	  }
-	};
-
-	module.exports = invariant;
-	
-	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(21)))
+	module.exports = function() {
+		var list = [];
+		list.toString = function toString() {
+			var result = [];
+			for(var i = 0; i < this.length; i++) {
+				var item = this[i];
+				if(item[2]) {
+					result.push("@media " + item[2] + "{" + item[1] + "}");
+				} else {
+					result.push(item[1]);
+				}
+			}
+			return result.join("");
+		};
+		return list;
+	}
 
 /***/ },
-/* 21 */
+/* 24 */
 /***/ function(module, exports, __webpack_require__) {
 
 	// shim for using process in browser
@@ -2293,28 +2349,7 @@
 
 
 /***/ },
-/* 22 */
-/***/ function(module, exports, __webpack_require__) {
-
-	module.exports = function() {
-		var list = [];
-		list.toString = function toString() {
-			var result = [];
-			for(var i = 0; i < this.length; i++) {
-				var item = this[i];
-				if(item[2]) {
-					result.push("@media " + item[2] + "{" + item[1] + "}");
-				} else {
-					result.push(item[1]);
-				}
-			}
-			return result.join("");
-		};
-		return list;
-	}
-
-/***/ },
-/* 23 */
+/* 25 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/*
@@ -2331,7 +2366,7 @@
 
 	"use strict";
 
-	var invariant = __webpack_require__(26);
+	var invariant = __webpack_require__(28);
 
 	var _lastID = 1;
 	var _prefix = 'ID_';
@@ -2570,14 +2605,14 @@
 
 
 /***/ },
-/* 24 */
+/* 26 */
 /***/ function(module, exports, __webpack_require__) {
 
 	module.exports = function() { throw new Error("define cannot be used indirect"); };
 
 
 /***/ },
-/* 25 */
+/* 27 */
 /***/ function(module, exports, __webpack_require__) {
 
 	module.exports = function(module) {
@@ -2593,7 +2628,7 @@
 
 
 /***/ },
-/* 26 */
+/* 28 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/**

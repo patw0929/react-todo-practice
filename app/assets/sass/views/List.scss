@@ -1,0 +1,11 @@
+.todo-list {
+  div > span {
+    display: block;
+    background-color: #eee;
+    padding: 10px;
+
+    &.selected {
+      background-color: #999;
+    }
+  }
+}
