@@ -20,6 +20,7 @@
     "gulp-livereload": "^2.1.1",
     "gulp-notify": "^2.0.0",
     "gulp-webpack": "^1.0.0",
+    "image-webpack-loader": "0.0.7",
     "jsx-loader": "^0.12.1",
     "less": "^1.7.5",
     "less-loader": "^0.7.7",
