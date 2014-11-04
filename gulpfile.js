@@ -1,5 +1,6 @@
 var gulp = require('gulp'),
     compass = require('gulp-compass'),
+    less = require('gulp-less'),
     gulpWebpack = require('gulp-webpack'),
     webpack = require('webpack'),
     livereload = require('gulp-livereload'),
@@ -10,6 +11,12 @@ livereload.listen();
 
 var env = 'production'; // development || production
 
+gulp.task('bundle-less', function() {
+  return gulp.src('./app/assets/less/material-ui.less')
+    .pipe(less())
+    .pipe(gulp.dest('./app/assets/sass/vendor'));
+});
+
 gulp.task('bundle-css', function () {
   gulp.src('./app/assets/sass/*.scss')
     .pipe(compass({
@@ -19,6 +26,7 @@ gulp.task('bundle-css', function () {
         sass: './app/assets/sass',
         image: './build/assets/images',
         font: './build/assets/fonts',
+        require: ['sass-css-importer'],
         import_path: [
           'bower_components/meyer-reset/stylesheets'
         ]

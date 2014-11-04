@@ -1,21 +1,22 @@
 .inputbox {
-  margin: 10px auto;
-  text-align: center;
+  height: 100px;
 
-  input[type="text"] {
+  .mui-input {
     width: 90%;
-    font-size: 16px;
-    padding: 10px;
+    display: inline-block;
+    margin: 30px 10px;
+    float: left;
+
+    input[type="text"] {
+      width: 100%;
+    }
+
+    .mui-input-bar {
+      width: 100%;
+    }
   }
 
-  button[type="submit"] {
-    width: 5%;
-    min-width: 85px;
-    font-size: 16px;
-    line-height: 42px;
-    border-radius: 5px;
-    border: 0;
-    background-color: #eee;
-    margin-left: 10px;
+  .button {
+    margin: 10px auto 0 10px;
   }
 }
