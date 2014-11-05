@@ -2,6 +2,8 @@
  *
  */
 
+var ReactCSSTransitionGroup = React.addons.CSSTransitionGroup;
+
 var actions = require('../actions/AppActionCreator');
 var ListItem = React.createFactory(require('./ListItem.jsx'));
 var styles = require('../../assets/sass/views/List.scss');
@@ -22,7 +24,9 @@ var List = React.createClass({
 
     return (
       <div className="todo-list">
-        {arr}
+        <ReactCSSTransitionGroup transitionName="items">
+          {arr}
+        </ReactCSSTransitionGroup>
       </div>
     );
   },

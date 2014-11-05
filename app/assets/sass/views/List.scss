@@ -22,4 +22,22 @@
       }
     }
   }
+
+  .items-enter {
+    opacity: 0.01;
+    transition: opacity .5s ease-in;
+  }
+
+  .items-enter.items-enter-active {
+    opacity: 1;
+  }
+
+  .items-leave {
+    opacity: 1;
+    transition: opacity .5s ease-in;
+  }
+
+  .items-leave.items-leave-active {
+    opacity: 0.01;
+  }
 }
