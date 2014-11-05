@@ -1,3 +1,5 @@
+var webpack = require('webpack');
+
 module.exports = {
   entry: "./app/js/boot.js",
   resolve: {
@@ -11,6 +13,9 @@ module.exports = {
     "jquery": "jQuery",
     "react": "React"
   },
+  plugins: [
+    new webpack.optimize.UglifyJsPlugin()
+  ],
   module: {
     loaders: [
       { test: /\.css$/, loader: "style!css" },
