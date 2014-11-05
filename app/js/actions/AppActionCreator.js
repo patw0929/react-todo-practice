@@ -25,6 +25,13 @@ var AppActionCreators = {
       });
     },
 
+    deleteTodo: function (item) {
+      AppDispatcher.handleViewAction({
+        actionType: AppConstants.TODO_REMOVE,
+        item: item
+      });
+    },
+
     selectTodo: function (item) {
       AppDispatcher.handleViewAction({
         actionType: AppConstants.TODO_SELECT,

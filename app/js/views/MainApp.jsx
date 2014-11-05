@@ -68,6 +68,7 @@ var MainApp = React.createClass({
     // unmount
 
     componentWillUnmount: function() {
+      TodoStore.removeChangeListener(this._onChange);
     },
 
 

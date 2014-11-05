@@ -7,5 +7,19 @@
     &.selected {
       background-color: #999;
     }
+
+    a.delete-btn {
+      display: none;
+    }
+
+    &:hover {
+      a.delete-btn {
+        display: block;
+        width: 16px;
+        height: 16px;
+        float: right;
+        cursor: pointer;
+      }
+    }
   }
 }

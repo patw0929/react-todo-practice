@@ -16,7 +16,8 @@ var List = React.createClass({
                        item={item}
                        selected={this.props.truth.selectedItem == item}
 
-                       onClick={this.handleClick.bind(this, item)} />
+                       onClick={this.handleClick.bind(this, item)}
+                       onDelete={this.handleDelete.bind(this, item)} />
     }, this);
 
     return (
@@ -29,6 +30,13 @@ var List = React.createClass({
   handleClick: function (item) {
     console.log('我被點了', item.name);
     actions.selectTodo(item);
+  },
+
+  handleDelete: function (item) {
+    console.log('刪除', item.name);
+    if (confirm('確定要刪除嗎？')) {
+      actions.deleteTodo(item);
+    }
   }
 
 });

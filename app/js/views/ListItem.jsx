@@ -13,7 +13,10 @@ var ListItem = React.createClass({
 
     return (
       <div onClick={this.props.onClick}>
-        <span className={classes}>{this.props.item.uid} {this.props.item.name} {this.props.selected ? "XD" : "QQ"}</span>
+        <span className={classes}>
+          {this.props.item.uid} {this.props.item.name} {this.props.selected ? "XD" : "QQ"}
+          <a className="delete-btn" onClick={this.props.onDelete}>x</a>
+        </span>
       </div>
     );
   }
