@@ -1,7 +1,17 @@
 header.header {
+  position: relative;
+  overflow: hidden;
+
   h1 {
+    float: left;
+    width: 100%;
     text-align: center;
     background-color: #12c46e;
     line-height: 60px;
+  }
+
+  .filterbox {
+    position: absolute;
+    right: 0;
   }
 }

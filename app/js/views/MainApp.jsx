@@ -135,7 +135,8 @@ var MainApp = React.createClass({
     _getState: function () {
       return {
         arrTodos: TodoStore.getTodos(),
-        selectedItem: TodoStore.getSelectedItem()
+        selectedItem: TodoStore.getSelectedItem(),
+        searchFilter: TodoStore.getSearchFilter()
       }
     }
 

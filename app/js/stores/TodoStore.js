@@ -15,6 +15,7 @@ var EventEmitter = require('events').EventEmitter; // 取得一個 pub/sub 廣�
 
 var arrTodos = [];
 var selectedItem = null;
+var searchFilter = '';
 
 var db = window.localStorage;
 if (db.hasOwnProperty('patwDB') === false) {
@@ -53,6 +54,10 @@ objectAssign( TodoStore, EventEmitter.prototype, {
    */
   getSelectedItem: function(){
     return selectedItem;
+  },
+
+  getSearchFilter: function () {
+    return searchFilter;
   }
 });
 
@@ -110,6 +115,18 @@ TodoStore.dispatchToken = AppDispatcher.register( function eventHandlers(evt){
         TodoStore.emit(AppConstants.CHANGE_EVENT);
       }
       saveToLocalStorage();
+      break;
+
+    /**
+     *
+     */
+    case AppConstants.TODO_FILTER:
+      console.log('TodoStore 搜尋: ', action.val);
+
+      if (searchFilter != action.val) {
+        searchFilter = action.val;
+        TodoStore.emit(AppConstants.CHANGE_EVENT);
+      }
       break;
 
     default:

@@ -37,6 +37,13 @@ var AppActionCreators = {
         actionType: AppConstants.TODO_SELECT,
         item: item
       });
+    },
+
+    filterTodo: function (val) {
+      AppDispatcher.handleViewAction({
+        actionType: AppConstants.TODO_FILTER,
+        val: val
+      })
     }
 
 };

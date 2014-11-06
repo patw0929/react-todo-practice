@@ -12,14 +12,17 @@ var List = React.createClass({
 
   render: function () {
     var arrTodos = this.props.truth.arrTodos;
+    var filterVal = this.props.truth.searchFilter;
 
-    var arr = arrTodos.map(function (item) {
-      return <ListItem key={item.uid}
-                       item={item}
-                       selected={this.props.truth.selectedItem == item}
+    var arr = arrTodos.filter(function (item) {
+                return item.name.indexOf(filterVal) > -1;
+              }).map(function (item) {
+                return <ListItem key={item.uid}
+                                 item={item}
+                                 selected={this.props.truth.selectedItem == item}
 
-                       onClick={this.handleClick.bind(this, item)}
-                       onDelete={this.handleDelete.bind(this, item)} />
+                                 onClick={this.handleClick.bind(this, item)}
+                                 onDelete={this.handleDelete.bind(this, item)} />
     }, this);
 
     return (
@@ -42,7 +45,6 @@ var List = React.createClass({
       actions.deleteTodo(item);
     }
   }
-
 });
 
 module.exports = List;
